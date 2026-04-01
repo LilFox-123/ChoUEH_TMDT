@@ -1,0 +1,59 @@
+/* ===== Chợ UEH Custom Styles ===== */
+
+/* Logo */
+.cho-ueh-logo{display:inline-flex;align-items:center;gap:9px;text-decoration:none;user-select:none;flex-shrink:0;}
+.logo-emblem{width:40px;height:40px;background:linear-gradient(145deg,#EC6D33 0%,#c75320 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(236,109,51,0.45);position:relative;overflow:hidden;}
+.logo-emblem::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%);}
+.logo-emblem svg{position:relative;z-index:1;}
+.logo-wordmark{display:flex;flex-direction:column;line-height:1;}
+.logo-cho{font-size:10px;font-weight:700;color:#6f797a;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1px;}
+.logo-ueh-text{font-family:'Playfair Display','Georgia',serif;font-size:23px;font-weight:900;color:#005f69;letter-spacing:-0.02em;line-height:1;}
+.logo-ueh-text .accent-dot{color:#EC6D33;}
+.logo-white .logo-cho{color:rgba(255,255,255,0.6);}
+.logo-white .logo-ueh-text{color:#fff;}
+.logo-white .logo-ueh-text .accent-dot{color:#ffb598;}
+
+/* Body */
+body{font-family:'Inter',sans-serif;background-color:#f2fbfc;color:#151d1e;}
+h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+
+/* Gradients */
+.primary-gradient{background:linear-gradient(135deg,#00464d 0%,#005f69 100%);}
+.accent-gradient{background:linear-gradient(135deg,#ec6d33 0%,#ff8c5a 100%);}
+.editorial-headline{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;}
+
+/* Toast notifications */
+.toast-container{position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{padding:14px 20px;border-radius:12px;color:#fff;font-size:14px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,0.15);animation:slideIn 0.3s ease,fadeOut 0.3s ease 2.7s;max-width:380px;display:flex;align-items:center;gap:10px;}
+.toast.success{background:linear-gradient(135deg,#00464d,#005f69);}
+.toast.error{background:linear-gradient(135deg,#ba1a1a,#dd3333);}
+.toast.info{background:linear-gradient(135deg,#35618c,#4a7ab5);}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+
+/* Loading spinner */
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 0.6s linear infinite;}
+.spinner-lg{width:40px;height:40px;border-width:4px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Skeleton loading */
+.skeleton{background:linear-gradient(90deg,#e1eaeb 25%,#ecf5f6 50%,#e1eaeb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* Product card hover */
+.product-card{transition:transform 0.3s ease,box-shadow 0.3s ease;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,70,77,0.1);}
+
+/* No scrollbar */
+.no-scrollbar::-webkit-scrollbar{display:none;}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+
+/* Ghost border */
+.ghost-border{border:1px solid rgba(190,200,202,0.15);}
+
+/* Hero slider animations */
+.hero-float{animation:heroFloat 6s ease-in-out infinite;}
+.hero-float-delay{animation:heroFloat 6s ease-in-out 2s infinite;}
+@keyframes heroFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-20px) scale(1.05);}}
+.hero-slide{transition:opacity 1s ease-in-out,transform 1.2s ease-in-out;}

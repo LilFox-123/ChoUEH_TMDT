@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tin nhắn - Chợ UEH</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="/css/custom.css" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#00464d","primary-container":"#005f69","primary-fixed":"#a7eefa","secondary":"#35618c","tertiary":"#712600","surface":"#f2fbfc","surface-container-lowest":"#ffffff","surface-container-low":"#ecf5f6","surface-container":"#e7f0f0","surface-container-high":"#e1eaeb","surface-container-highest":"#dbe4e5","on-surface":"#151d1e","on-surface-variant":"#3f484a","outline":"#6f797a","outline-variant":"#bec8ca","background":"#f2fbfc","accent":"#EC6D33"},fontFamily:{"headline":["Plus Jakarta Sans"],"body":["Inter"]},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"}}}}</script>
+  <style>::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#bec8ca;border-radius:10px;}</style>
+</head>
+<body class="bg-background text-on-surface h-screen flex flex-col overflow-hidden">
+
+<%- include('partials/navbar') %>
+
+<main class="flex-1 mt-[68px] flex overflow-hidden max-w-screen-2xl mx-auto w-full bg-surface-container-low">
+  <!-- Conversation List -->
+  <aside class="w-[320px] bg-surface-container flex flex-col border-r border-outline-variant/10">
+    <div class="p-5 space-y-4">
+      <h1 class="text-xl font-bold font-headline text-primary">Tin nhắn</h1>
+    </div>
+    <div id="conversation-list" class="flex-1 overflow-y-auto">
+      <div class="p-6 text-center text-on-surface-variant text-sm">
+        <span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">chat_bubble_outline</span>
+        Chưa có tin nhắn nào
+      </div>
+    </div>
+  </aside>
+
+  <!-- Chat Window -->
+  <section class="flex-1 flex flex-col bg-surface-container-lowest">
+    <div id="chat-placeholder" class="flex-1 flex items-center justify-center text-on-surface-variant">
+      <div class="text-center">
+        <span class="material-symbols-outlined text-6xl text-outline-variant mb-4 block">forum</span>
+        <p class="text-lg font-semibold">Chọn một cuộc trò chuyện</p>
+        <p class="text-sm">để bắt đầu nhắn tin</p>
+      </div>
+    </div>
+
+    <div id="chat-window" class="hidden flex-1 flex flex-col">
+      <!-- Chat Header -->
+      <header class="h-[64px] flex items-center justify-between px-6 border-b border-surface-container">
+        <div class="flex items-center gap-3">
+          <img id="chat-avatar" class="w-10 h-10 rounded-full object-cover" src="" alt=""/>
+          <div>
+            <h2 id="chat-name" class="text-sm font-bold font-headline"></h2>
+            <span id="chat-product-name" class="text-[11px] text-on-surface-variant"></span>
+          </div>
+        </div>
+      </header>
+      <!-- Messages -->
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+      <!-- Input -->
+      <div class="p-4 bg-surface-container-lowest border-t border-surface-container">
+        <form id="message-form" class="flex items-center gap-3 bg-surface-container-high rounded-2xl px-4 py-2">
+          <input id="message-input" class="flex-1 bg-transparent border-none focus:ring-0 text-sm" placeholder="Nhập tin nhắn..." type="text" required/>
+          <button type="submit" class="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center hover:shadow-lg active:scale-90 transition-all">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="/js/app.js"></script>
+<script src="/js/messages.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng tin - Chợ UEH</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link href="/css/custom.css" rel="stylesheet" />
+  <script>tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#00464d", "primary-container": "#005f69", "primary-fixed": "#a7eefa", "secondary": "#35618c", "tertiary": "#712600", "surface": "#f2fbfc", "surface-container-lowest": "#ffffff", "surface-container-low": "#ecf5f6", "surface-container": "#e7f0f0", "surface-container-high": "#e1eaeb", "on-surface": "#151d1e", "on-surface-variant": "#3f484a", "outline": "#6f797a", "outline-variant": "#bec8ca", "background": "#f2fbfc" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" } } } }</script>
+</head>
+
+<body class="bg-background text-on-surface">
+
+  <%- include('partials/navbar') %>
+
+    <main class="pt-24 pb-20 px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-10 text-center md:text-left">
+          <span
+            class="inline-block px-3 py-1 rounded-full bg-[#d0e4ff] text-[#001d35] text-xs font-semibold mb-4 tracking-wider uppercase">Cổng
+            Sinh Viên</span>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight mb-2">Đăng bài trên Chợ UEH</h1>
+          <p class="text-on-surface-variant max-w-2xl">Đăng bài bán đồ hoặc tạo bài “Đang cần” để sinh viên UEH khác chủ
+            động liên hệ khi họ có đúng món bạn đang tìm.</p>
+        </div>
+
+        <form id="post-ad-form" enctype="multipart/form-data"
+          class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-7 space-y-6">
+            <section class="bg-surface-container-lowest p-8 rounded-xl shadow-sm ghost-border">
+              <h2 class="text-xl font-bold text-primary mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">edit_note</span> Thông tin bài đăng
+              </h2>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-sm font-semibold text-on-surface-variant mb-3">Loại bài đăng</label>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label
+                      class="flex items-start gap-3 p-4 rounded-xl border-2 border-surface-container-high cursor-pointer hover:bg-surface-container-low has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/25 transition-all">
+                      <input checked type="radio" name="listingType" value="sell"
+                        class="mt-1 rounded border-outline-variant text-primary focus:ring-primary" />
+                      <div>
+                        <p class="font-bold text-on-surface">Đang bán</p>
+                        <p class="text-sm text-on-surface-variant mt-1">Đăng món đồ bạn đang pass lại cho cộng đồng UEH.
+                        </p>
+                      </div>
+                    </label>
+                    <label
+                      class="flex items-start gap-3 p-4 rounded-xl border-2 border-surface-container-high cursor-pointer hover:bg-surface-container-low has-[:checked]:border-[#c68a00] has-[:checked]:bg-[#fff5d8] transition-all">
+                      <input type="radio" name="listingType" value="wanted"
+                        class="mt-1 rounded border-outline-variant text-[#c68a00] focus:ring-[#c68a00]" />
+                      <div>
+                        <p class="font-bold text-on-surface">Đang cần</p>
+                        <p class="text-sm text-on-surface-variant mt-1">Đăng nhu cầu để sinh viên khác nhắn cho bạn khi
+                          họ có món phù hợp.</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-on-surface-variant mb-2">Tiêu đề bài đăng *</label>
+                  <input id="ad-title"
+                    class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all placeholder:text-outline"
+                    placeholder="Ví dụ: Cần mua giáo trình ACC101 hoặc bán máy tính Casio" type="text" required />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-2">Danh mục *</label>
+                    <select id="ad-category"
+                      class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all"
+                      required>
+                      <option value="sach">Sách & Giáo trình</option>
+                      <option value="dien-tu">Thiết bị điện tử</option>
+                      <option value="do-dung">Đồ dùng</option>
+                      <option value="thoi-trang">Thời trang</option>
+                      <option value="xe">Xe & Phương tiện</option>
+                      <option value="khac">Khác</option>
+                    </select>
+                  </div>
+
+                  <div id="sell-price-group">
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-2">Giá bán (VNĐ) <span
+                        id="price-required-indicator" class="text-red-500">*</span></label>
+                    <input id="ad-price"
+                      class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all"
+                      placeholder="0" type="number" min="0" />
+                  </div>
+                </div>
+
+                <div id="wanted-budget-group" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-2">Ngân sách từ</label>
+                    <input id="ad-budget-min"
+                      class="w-full px-4 py-3 rounded-lg bg-[#fff8e8] border border-[#f4ddb0] focus:bg-white focus:border-[#c68a00] focus:ring-0 transition-all"
+                      placeholder="100000" type="number" min="0" />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-2">Ngân sách đến</label>
+                    <input id="ad-budget-max"
+                      class="w-full px-4 py-3 rounded-lg bg-[#fff8e8] border border-[#f4ddb0] focus:bg-white focus:border-[#c68a00] focus:ring-0 transition-all"
+                      placeholder="300000" type="number" min="0" />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-2">Mức độ gấp</label>
+                    <select id="ad-urgency"
+                      class="w-full px-4 py-3 rounded-lg bg-[#fff8e8] border border-[#f4ddb0] focus:bg-white focus:border-[#c68a00] focus:ring-0 transition-all">
+                      <option value="medium">Cần trong tuần</option>
+                      <option value="high">Cần gấp</option>
+                      <option value="low">Chưa gấp</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="condition-group">
+                  <label class="block text-sm font-semibold text-on-surface-variant mb-3">Tình trạng</label>
+                  <div class="flex gap-4">
+                    <label
+                      class="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-surface-container-high cursor-pointer hover:bg-surface-container-low has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/30 transition-all">
+                      <input checked name="condition" value="new" type="radio" class="hidden" />
+                      <span class="material-symbols-outlined text-sm">new_releases</span><span
+                        class="font-medium">Mới</span>
+                    </label>
+                    <label
+                      class="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-surface-container-high cursor-pointer hover:bg-surface-container-low has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/30 transition-all">
+                      <input name="condition" value="used" type="radio" class="hidden" />
+                      <span class="material-symbols-outlined text-sm">history</span><span class="font-medium">Đã
+                        dùng</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-on-surface-variant mb-2">Mô tả chi tiết *</label>
+                  <textarea id="ad-description"
+                    class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all resize-none"
+                    placeholder="Mô tả tình trạng, nhu cầu, phiên bản cần tìm hoặc lý do bán..." rows="4"
+                    maxlength="2000" required></textarea>
+                  <div id="description-counter" class="text-xs text-on-surface-variant mt-1 text-right">0 / 2000 ký tự
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-on-surface-variant mb-2">Khu vực / Cơ sở UEH</label>
+                  <select id="ad-location"
+                    class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all">
+                    <option>Cơ sở A - 59C Nguyễn Đình Chiểu</option>
+                    <option>Cơ sở B - 279 Nguyễn Tri Phương</option>
+                    <option>Cơ sở N - Nam Thành Phố</option>
+                    <option>Ký túc xá 43-45 Nguyễn Chí Thanh</option>
+                  </select>
+                </div>
+
+                <div class="pt-2 border-t border-outline-variant/20">
+                  <div class="mb-4">
+                    <h3 class="text-lg font-bold text-primary">Ngữ cảnh học phần UEH</h3>
+                    <p class="text-sm text-on-surface-variant mt-1">Tùy chọn thêm mã môn, khoa, niên khóa, điểm hẹn và
+                      khung giờ để bài đăng sát nhu cầu của sinh viên UEH hơn.</p>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Mã môn học</label>
+                      <input id="ad-course-code"
+                        class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all uppercase"
+                        placeholder="Ví dụ: ACC101" type="text" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Tên môn học</label>
+                      <input id="ad-course-name"
+                        class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all"
+                        placeholder="Nguyên lý kế toán" type="text" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Khoa</label>
+                      <select id="ad-faculty"
+                        class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all">
+                        <option value="">Chọn khoa</option>
+                        <option value="Kế toán">Kế toán</option>
+                        <option value="Kinh tế">Kinh tế</option>
+                        <option value="Kinh doanh quốc tế">Kinh doanh quốc tế</option>
+                        <option value="Tài chính">Tài chính</option>
+                        <option value="Luật">Luật</option>
+                        <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Niên khóa</label>
+                      <input id="ad-academic-year"
+                        class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all"
+                        placeholder="Ví dụ: 2024-2025" type="text" />
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Học kỳ</label>
+                      <select id="ad-semester"
+                        class="w-full px-4 py-3 rounded-lg bg-surface-container-high border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all">
+                        <option value="">Chọn học kỳ</option>
+                        <option value="1">Học kỳ 1</option>
+                        <option value="2">Học kỳ 2</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Phù hợp với năm
+                        học</label>
+                      <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm">
+                          <input type="checkbox" name="ad-suitable-year" value="1"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" />
+                          <span>Năm 1</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm">
+                          <input type="checkbox" name="ad-suitable-year" value="2"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" />
+                          <span>Năm 2</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm">
+                          <input type="checkbox" name="ad-suitable-year" value="3"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" />
+                          <span>Năm 3</span>
+                        </label>
+                        <label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm">
+                          <input type="checkbox" name="ad-suitable-year" value="4"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" />
+                          <span>Năm 4</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Điểm hẹn trong UEH</label>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Cơ sở A - 59 Nguyễn Đình Chiểu"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Cơ sở A - 59
+                            Nguyễn Đình Chiểu</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Cơ sở B - 279 Nguyễn Tri Phương"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Cơ sở B - 279
+                            Nguyễn Tri Phương</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Cơ sở N - Nguyễn Văn Linh"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Cơ sở N -
+                            Nguyễn Văn Linh</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Thư viện"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Thư
+                            viện</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Căn tin"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Căn
+                            tin</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-meeting-point" value="Sảnh chính"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Sảnh
+                            chính</span></label>
+                      </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                      <label class="block text-sm font-semibold text-on-surface-variant mb-2">Khung giờ giao nhận ưu
+                        tiên</label>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-preferred-time-slot" value="Sau tiết 2"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Sau tiết
+                            2</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-preferred-time-slot" value="Sau tiết 4"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Sau tiết
+                            4</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-preferred-time-slot" value="Buổi trưa 11h-13h"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Buổi trưa
+                            11h-13h</span></label>
+                        <label
+                          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-sm"><input
+                            type="checkbox" name="ad-preferred-time-slot" value="Buổi chiều 15h-17h"
+                            class="rounded border-outline-variant text-primary focus:ring-primary" /><span>Buổi chiều
+                            15h-17h</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+            <section id="image-section" class="bg-surface-container-lowest p-8 rounded-xl shadow-sm ghost-border">
+              <h2 class="text-xl font-bold text-primary mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">image</span> Hình ảnh bài đăng
+              </h2>
+              <div
+                class="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 text-center flex flex-col items-center justify-center gap-4 bg-surface-container-low/30 hover:bg-surface-container-low transition-colors cursor-pointer group"
+                onclick="document.getElementById('image-input').click()">
+                <div
+                  class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-3xl">add_a_photo</span>
+                </div>
+                <p class="font-bold text-on-surface">Tải ảnh lên</p>
+                <p id="image-helper-text" class="text-xs text-on-surface-variant italic">Bạn có thể thêm ảnh thật của
+                  món đồ hoặc ảnh minh họa nhu cầu cần tìm.</p>
+              </div>
+              <input type="file" id="image-input" name="images" multiple accept="image/*" class="hidden" />
+              <div id="image-preview" class="grid grid-cols-3 gap-3 mt-4"></div>
+            </section>
+
+            <div class="space-y-4">
+              <div id="post-error" class="hidden p-3 bg-red-50 text-red-700 rounded-lg text-sm font-medium"></div>
+              <button type="submit" id="submit-btn"
+                class="w-full py-4 rounded-lg bg-[#EC6D33] text-white font-extrabold text-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span>Đăng bài ngay</span>
+                <span class="material-symbols-outlined">rocket_launch</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+      <div id="toast-container" class="toast-container"></div>
+      <script src="/js/app.js"></script>
+      <script src="/js/post-ad.js"></script>
+</body>
+
+</html>

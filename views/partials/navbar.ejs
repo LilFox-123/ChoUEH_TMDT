@@ -1,0 +1,37 @@
+<nav class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-md shadow-sm border-b border-outline-variant/20">
+  <div class="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+    <div class="flex items-center gap-8">
+      <a href="/" class="cho-ueh-logo">
+        <div class="logo-emblem">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 3L2 7.5L11 12L20 7.5L11 3Z" fill="white" opacity="0.95"/>
+            <path d="M5 9.5V14.5C5 14.5 7.5 17 11 17C14.5 17 17 14.5 17 14.5V9.5" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <line x1="18.5" y1="8" x2="18.5" y2="13" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="18.5" cy="7" r="1.5" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-wordmark">
+          <span class="logo-cho">Chợ</span>
+          <span class="logo-ueh-text">UEH<span class="accent-dot">.</span></span>
+        </div>
+      </a>
+      <div class="hidden lg:flex items-center gap-1">
+        <a href="/products?category=sach" class="text-slate-600 hover:text-[#005F69] transition-colors px-3 py-2 rounded-lg hover:bg-[#ecf5f6]">Sách</a>
+        <a href="/products?category=dien-tu" class="text-slate-600 hover:text-[#005F69] transition-colors px-3 py-2 rounded-lg hover:bg-[#ecf5f6]">Điện tử</a>
+        <a href="/products?category=do-dung" class="text-slate-600 hover:text-[#005F69] transition-colors px-3 py-2 rounded-lg hover:bg-[#ecf5f6]">Đồ dùng</a>
+        <a href="/products?category=khac" class="text-slate-600 hover:text-[#005F69] transition-colors px-3 py-2 rounded-lg hover:bg-[#ecf5f6]">Khác</a>
+      </div>
+    </div>
+    <div class="flex-1 max-w-md mx-8 hidden md:block">
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#6f797a] text-xl">search</span>
+        <input id="navbar-search" class="w-full bg-[#e1eaeb] border-none rounded-full pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-[#00464d] focus:bg-white transition-all outline-none" placeholder="Tìm kiếm giáo trình, laptop..." type="text" onkeydown="if(event.key==='Enter'){window.location.href='/products?search='+this.value}"/>
+      </div>
+    </div>
+    <div class="flex items-center gap-3" id="navbar-auth">
+      <!-- JS will update this based on login state -->
+      <a href="/login" class="text-slate-600 font-semibold px-4 py-2 hover:bg-[#ecf5f6] transition-all rounded-lg text-sm" id="nav-login-btn">Đăng nhập</a>
+      <a href="/post-ad" class="bg-[#EC6D33] text-white px-5 py-2.5 rounded-lg font-bold shadow-sm hover:brightness-110 transition-all text-sm">Đăng tin</a>
+    </div>
+  </div>
+</nav>

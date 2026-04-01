@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sản phẩm - Chợ UEH</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="/css/custom.css" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#00464d","primary-container":"#005f69","primary-fixed":"#a7eefa","secondary":"#35618c","secondary-container":"#a2cdfe","secondary-fixed":"#d0e4ff","surface":"#f2fbfc","surface-container-lowest":"#ffffff","surface-container-low":"#ecf5f6","surface-container":"#e7f0f0","surface-container-high":"#e1eaeb","surface-container-highest":"#dbe4e5","on-surface":"#151d1e","on-surface-variant":"#3f484a","outline":"#6f797a","outline-variant":"#bec8ca","background":"#f2fbfc","on-secondary-container":"#295781","error":"#ba1a1a"},fontFamily:{"headline":["Plus Jakarta Sans"],"body":["Inter"]},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+
+<%- include('partials/navbar') %>
+
+<main class="pt-24 pb-16 max-w-7xl mx-auto px-6">
+  <div class="flex flex-col md:flex-row gap-8">
+    <aside class="w-full md:w-72 space-y-8">
+      <section>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Danh mục</h3>
+        <div class="space-y-2" id="category-filters">
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="" class="rounded border-outline-variant text-primary focus:ring-primary" checked/>
+            <span class="text-sm font-medium">Tất cả bài đăng</span>
+          </label>
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="sach" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span class="text-sm text-on-surface-variant">Sách & Tài liệu</span>
+          </label>
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="dien-tu" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span class="text-sm text-on-surface-variant">Thiết bị điện tử</span>
+          </label>
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="do-dung" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span class="text-sm text-on-surface-variant">Đồ dùng</span>
+          </label>
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="thoi-trang" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span class="text-sm text-on-surface-variant">Thời trang</span>
+          </label>
+          <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white transition-colors">
+            <input type="radio" name="category" value="khac" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span class="text-sm text-on-surface-variant">Khác</span>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Ngữ cảnh UEH</h3>
+        <div class="space-y-3">
+          <input id="course-code-filter" class="w-full text-sm bg-surface-container-high border-none rounded-lg p-2.5 focus:ring-1 focus:ring-primary uppercase" placeholder="Mã môn, ví dụ ACC101" type="text"/>
+          <select id="faculty-filter" class="w-full text-sm bg-surface-container-high border-none rounded-lg p-2.5 focus:ring-1 focus:ring-primary">
+            <option value="">Tất cả khoa</option>
+            <option value="Kế toán">Kế toán</option>
+            <option value="Kinh tế">Kinh tế</option>
+            <option value="Kinh doanh quốc tế">Kinh doanh quốc tế</option>
+            <option value="Tài chính">Tài chính</option>
+            <option value="Luật">Luật</option>
+            <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+          </select>
+        </div>
+      </section>
+
+      <section>
+        <h3 id="price-filter-label" class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Khoảng giá (VND)</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <input id="min-price" class="text-xs bg-surface-container-high border-none rounded-lg p-2 focus:ring-1 focus:ring-primary" placeholder="Từ" type="number"/>
+          <input id="max-price" class="text-xs bg-surface-container-high border-none rounded-lg p-2 focus:ring-1 focus:ring-primary" placeholder="Đến" type="number"/>
+        </div>
+      </section>
+
+      <section id="condition-filter-section">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Tình trạng</h3>
+        <div class="flex flex-wrap gap-2">
+          <button class="condition-btn px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-xs font-semibold" data-condition="">Tất cả</button>
+          <button class="condition-btn px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-xs font-semibold" data-condition="new">Mới</button>
+          <button class="condition-btn px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant text-xs font-semibold" data-condition="used">Đã dùng</button>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Sắp xếp</h3>
+        <select id="sort-filter" class="w-full text-sm bg-surface-container-high border-none rounded-lg p-2 focus:ring-1 focus:ring-primary">
+          <option value="-createdAt">Mới nhất</option>
+          <option value="price">Giá thấp nhất</option>
+          <option value="-price">Giá cao nhất</option>
+          <option value="-views">Nhiều xem nhất</option>
+        </select>
+      </section>
+
+      <section>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Loại bài đăng</h3>
+        <div class="flex gap-2">
+          <button type="button" id="tab-sell" class="flex-1 px-3 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all">Đang bán</button>
+          <button type="button" id="tab-wanted" class="flex-1 px-3 py-2 rounded-full bg-surface-container text-on-surface-variant text-xs font-bold transition-all">Đang cần</button>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4">Khung giờ hẹn</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+            <input type="checkbox" name="time-slot-filter" value="Sau tiết 2" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span>Sau tiết 2</span>
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+            <input type="checkbox" name="time-slot-filter" value="Sau tiết 4" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span>Sau tiết 4</span>
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+            <input type="checkbox" name="time-slot-filter" value="Buổi trưa 11h-13h" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span>Buổi trưa 11h-13h</span>
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+            <input type="checkbox" name="time-slot-filter" value="Buổi chiều 15h-17h" class="rounded border-outline-variant text-primary focus:ring-primary"/>
+            <span>Buổi chiều 15h-17h</span>
+          </label>
+        </div>
+      </section>
+
+      <button id="apply-filters" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-container transition-all">Áp dụng bộ lọc</button>
+    </aside>
+
+    <div class="flex-1">
+      <div class="mb-8 p-4 bg-surface-container-low rounded-xl space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div class="flex flex-wrap gap-2" id="listing-type-tabs">
+            <button type="button" class="listing-type-tab px-4 py-2 rounded-full bg-primary text-white text-sm font-bold" data-listing-type="sell">Đang bán</button>
+            <button type="button" class="listing-type-tab px-4 py-2 rounded-full bg-white text-[#8a6400] text-sm font-bold border border-[#f1dca9]" data-listing-type="wanted">Đang cần</button>
+          </div>
+
+          <div class="relative w-full sm:w-64">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+            <input id="search-input" class="w-full pl-10 pr-4 py-2 bg-white border-none rounded-lg focus:ring-2 focus:ring-primary text-sm" placeholder="Tìm kiếm..." type="text"/>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <h1 id="listing-heading" class="text-xl font-bold text-on-surface">Bài đăng đang bán</h1>
+          <p id="product-count" class="text-sm text-on-surface-variant">(đang tải...)</p>
+        </div>
+      </div>
+
+      <div class="mb-6 flex flex-wrap items-center gap-3">
+        <span id="result-count" class="text-sm font-semibold text-on-surface">0 bài đăng</span>
+        <span class="text-outline-variant">|</span>
+        <div id="active-filters" class="flex flex-wrap gap-2 min-h-[28px]"></div>
+      </div>
+
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="skeleton h-72 rounded-xl"></div>
+        <div class="skeleton h-72 rounded-xl"></div>
+        <div class="skeleton h-72 rounded-xl"></div>
+        <div class="skeleton h-72 rounded-xl"></div>
+        <div class="skeleton h-72 rounded-xl"></div>
+        <div class="skeleton h-72 rounded-xl"></div>
+      </div>
+
+      <div id="pagination" class="mt-12 flex justify-center gap-2"></div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="/js/app.js"></script>
+<script src="/js/products.js"></script>
+</body>
+</html>

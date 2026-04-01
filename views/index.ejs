@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chợ UEH - Mua bán thông minh cho sinh viên</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="/css/custom.css" rel="stylesheet"/>
+  <script>
+    tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#00464d","primary-container":"#005f69","primary-fixed":"#a7eefa","primary-fixed-dim":"#8bd2dd","on-primary":"#ffffff","on-primary-container":"#8fd6e2","secondary":"#35618c","secondary-container":"#a2cdfe","secondary-fixed":"#d0e4ff","on-secondary-fixed":"#001d35","tertiary":"#712600","tertiary-container":"#973600","tertiary-fixed":"#ffdbce","tertiary-fixed-dim":"#ffb598","on-tertiary":"#ffffff","on-tertiary-container":"#ffbca1","surface":"#f2fbfc","surface-dim":"#d3dcdd","surface-container-lowest":"#ffffff","surface-container-low":"#ecf5f6","surface-container":"#e7f0f0","surface-container-high":"#e1eaeb","surface-container-highest":"#dbe4e5","surface-variant":"#dbe4e5","on-surface":"#151d1e","on-surface-variant":"#3f484a","outline":"#6f797a","outline-variant":"#bec8ca","background":"#f2fbfc","on-background":"#151d1e","inverse-surface":"#293233","inverse-primary":"#8bd2dd"},fontFamily:{"headline":["Plus Jakarta Sans","sans-serif"],"body":["Inter","sans-serif"],"display":["Playfair Display","Georgia","serif"]}}}}
+  </script>
+</head>
+<body class="bg-background text-on-surface">
+
+<%- include('partials/navbar') %>
+
+<main class="pt-16">
+<!-- HERO SLIDER -->
+<section class="relative h-[520px] md:h-[560px] overflow-hidden" id="hero-slider">
+  <!-- Slides -->
+  <div class="hero-slides absolute inset-0">
+    <!-- Slide 1 -->
+    <div class="hero-slide absolute inset-0 flex items-center opacity-100 transition-all duration-1000 ease-in-out z-10" data-slide="0">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#00464d] via-[#005f69] to-[#003840]"></div>
+      <div class="absolute inset-0 opacity-[0.07]">
+        <div class="absolute top-10 right-20 w-80 h-80 bg-[#a7eefa] rounded-full blur-3xl hero-float"></div>
+        <div class="absolute bottom-10 left-10 w-60 h-60 bg-[#ffb598] rounded-full blur-3xl hero-float-delay"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 w-full">
+        <div class="space-y-6 hero-content">
+          <span class="inline-block px-4 py-1.5 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-[#a7eefa] tracking-widest uppercase border border-white/10">🎓 Dành riêng cho UEHer</span>
+          <h1 class="font-headline text-4xl md:text-[3.5rem] font-black text-white leading-[1.1] tracking-tight">
+            Mua bán thông minh –<br/><span class="text-[#a7eefa]">Tiết kiệm cho sinh viên</span>
+          </h1>
+          <p class="text-lg text-white/70 max-w-lg font-medium leading-relaxed">Nền tảng trao đổi giáo trình, đồ dùng học tập và thiết bị công nghệ dành riêng cho cộng đồng UEHer.</p>
+          <div class="flex gap-4 pt-2">
+            <a href="/products" class="bg-[#EC6D33] text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">Khám phá ngay</a>
+            <a href="/register" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">Tham gia</a>
+          </div>
+        </div>
+        <div class="hidden md:flex justify-end">
+          <img alt="UEH Students" class="rounded-2xl shadow-2xl object-cover w-[420px] h-[340px] rotate-2 hover:rotate-0 transition-transform duration-700"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN_1iBbZcwAWNLdSP-N9SM9zUZB5PXJhHWkptwBgf_0zKEXF88GaY1T4m4-k_CBuLAl97Iy63no-ueQv5rPnBTBcpzqGUHpLlKNJYrdWlaDAH_gilXaHRyRYHPygkvzgRAj0EyK5VZAYbLlRbMGJMU9nC8oSisvRLVtGZpGGZ0EFlBhWJJiB4rpPWrcjQISunGAhJjIpjEd8vrqHGBgPAPNJ6YokW0dv__6a9NoIIFXQzLPNTZllix54eqQ6CzgYesJAgEA1JnV0g"/>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="hero-slide absolute inset-0 flex items-center opacity-0 transition-all duration-1000 ease-in-out" data-slide="1">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#712600] via-[#973600] to-[#5a1e00]"></div>
+      <div class="absolute inset-0 opacity-[0.07]">
+        <div class="absolute top-20 left-20 w-72 h-72 bg-[#ffdbce] rounded-full blur-3xl hero-float-delay"></div>
+        <div class="absolute bottom-0 right-10 w-80 h-80 bg-[#ffb598] rounded-full blur-3xl hero-float"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 w-full">
+        <div class="space-y-6 hero-content">
+          <span class="inline-block px-4 py-1.5 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-[#ffdbce] tracking-widest uppercase border border-white/10">🔥 Hot Deal Tuần Này</span>
+          <h1 class="font-headline text-4xl md:text-[3.5rem] font-black text-white leading-[1.1] tracking-tight">
+            Dọn kho cuối kỳ –<br/><span class="text-[#ffdbce]">Săn deal sách giá rẻ</span>
+          </h1>
+          <p class="text-lg text-white/70 max-w-lg font-medium leading-relaxed">Hàng trăm giáo trình, tài liệu ôn thi được pass lại với giá chỉ từ 50K. Nhanh tay kẻo hết!</p>
+          <div class="flex gap-4 pt-2">
+            <a href="/products?category=sach" class="bg-white text-[#712600] px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">Xem sách ngay</a>
+          </div>
+        </div>
+        <div class="hidden md:flex justify-end">
+          <img alt="Books" class="rounded-2xl shadow-2xl object-cover w-[420px] h-[340px] -rotate-2 hover:rotate-0 transition-transform duration-700"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIXP7lIhTvSUSjpCFYRTvsQWY7ePkMQ5dwVM1zJ_ljrw_4_NoLkeyi_k_OyA3mFafvuswhAm1jWeIx16B47Ta66gM4MTWxXTe9F3oprUoEMIUHLoANzent_-0bQpMYcxvGB_3UUNh6MOPLxsEAm7yOLD2gxGf7seHcAilb5vyn-b4rInD6dUrfDfSAgIKscnaasIKa6L-Ilf3ZAJRMjz9fyIA7FjWmfOvctZ3qfSgPOfKlia7fzgu8Yb3J-WzvR98zADkY8s8_wTY"/>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="hero-slide absolute inset-0 flex items-center opacity-0 transition-all duration-1000 ease-in-out" data-slide="2">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#35618c] via-[#295781] to-[#1d4060]"></div>
+      <div class="absolute inset-0 opacity-[0.07]">
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-[#d0e4ff] rounded-full blur-3xl hero-float"></div>
+        <div class="absolute top-10 left-40 w-48 h-48 bg-[#a2cdfe] rounded-full blur-3xl hero-float-delay"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 w-full">
+        <div class="space-y-6 hero-content">
+          <span class="inline-block px-4 py-1.5 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-[#d0e4ff] tracking-widest uppercase border border-white/10">💬 Kết nối an toàn</span>
+          <h1 class="font-headline text-4xl md:text-[3.5rem] font-black text-white leading-[1.1] tracking-tight">
+            Đăng tin miễn phí –<br/><span class="text-[#a2cdfe]">Bán nhanh trong 1 ngày</span>
+          </h1>
+          <p class="text-lg text-white/70 max-w-lg font-medium leading-relaxed">Chỉ cần 30 giây để đăng tin. Hệ thống chat nội bộ giúp bạn giao dịch an toàn ngay trong campus UEH.</p>
+          <div class="flex gap-4 pt-2">
+            <a href="/post-ad" class="bg-[#EC6D33] text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">Đăng tin ngay</a>
+            <a href="/products" class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">Khám phá</a>
+          </div>
+        </div>
+        <div class="hidden md:flex justify-end items-center">
+          <div class="grid grid-cols-2 gap-4 w-[420px]">
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 text-center hover:bg-white/20 transition-all">
+              <div class="text-4xl font-black text-white hero-counter" data-target="15000">0</div>
+              <p class="text-xs text-white/60 mt-1 font-semibold">Sinh viên</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 text-center hover:bg-white/20 transition-all">
+              <div class="text-4xl font-black text-white hero-counter" data-target="5200">0</div>
+              <p class="text-xs text-white/60 mt-1 font-semibold">Sản phẩm</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 text-center hover:bg-white/20 transition-all">
+              <div class="text-4xl font-black text-white hero-counter" data-target="98">0</div>
+              <p class="text-xs text-white/60 mt-1 font-semibold">% Hài lòng</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/15 text-center hover:bg-white/20 transition-all">
+              <div class="text-4xl font-black text-[#EC6D33]">24h</div>
+              <p class="text-xs text-white/60 mt-1 font-semibold">Bán xong</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dots Navigation -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+    <button class="hero-dot w-10 h-1.5 rounded-full bg-white/80 transition-all duration-300" data-slide="0" onclick="goToSlide(0)"></button>
+    <button class="hero-dot w-6 h-1.5 rounded-full bg-white/30 transition-all duration-300" data-slide="1" onclick="goToSlide(1)"></button>
+    <button class="hero-dot w-6 h-1.5 rounded-full bg-white/30 transition-all duration-300" data-slide="2" onclick="goToSlide(2)"></button>
+  </div>
+
+  <!-- Prev/Next arrows -->
+  <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/25 transition-all"><span class="material-symbols-outlined">chevron_left</span></button>
+  <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/25 transition-all"><span class="material-symbols-outlined">chevron_right</span></button>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="max-w-7xl mx-auto px-6 py-12">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- SIDEBAR -->
+    <aside class="w-full lg:w-64 space-y-6">
+      <div class="bg-surface-container-low p-6 rounded-xl space-y-6">
+        <h3 class="font-bold text-lg text-primary">Bộ lọc</h3>
+        <div>
+          <label class="block text-sm font-semibold mb-3 text-on-surface-variant">Danh mục</label>
+          <div class="space-y-2">
+            <a href="/products?category=sach" class="flex items-center gap-3 text-sm cursor-pointer group hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">book</span>Sách & Tài liệu</a>
+            <a href="/products?category=dien-tu" class="flex items-center gap-3 text-sm cursor-pointer group hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">devices</span>Điện tử</a>
+            <a href="/products?category=do-dung" class="flex items-center gap-3 text-sm cursor-pointer group hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">home_work</span>Đồ dùng phòng trọ</a>
+            <a href="/products?category=thoi-trang" class="flex items-center gap-3 text-sm cursor-pointer group hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">apparel</span>Thời trang</a>
+          </div>
+        </div>
+      </div>
+      <div class="bg-surface-container-low p-5 rounded-xl">
+        <h4 class="font-bold text-sm text-primary mb-3">📍 Bài đăng gần bạn</h4>
+        <div class="space-y-2">
+          <a href="/products?location=Cơ sở A" class="flex items-center gap-2 text-sm hover:text-primary transition-colors">📍 Cơ sở A - 59 Nguyễn Đình Chiểu</a>
+          <a href="/products?location=Cơ sở B" class="flex items-center gap-2 text-sm hover:text-primary transition-colors">📍 Cơ sở B - 279 Nguyễn Tri Phương</a>
+          <a href="/products?location=Cơ sở N" class="flex items-center gap-2 text-sm hover:text-primary transition-colors">📍 Cơ sở N - Nguyễn Văn Linh</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="flex-1 space-y-12">
+      <!-- CATEGORIES -->
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Khám phá danh mục</h2>
+          <a href="/products" class="text-primary font-bold text-sm underline underline-offset-4 decoration-2">Xem tất cả</a>
+        </div>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+          <a href="/products?category=sach" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-primary">book</span></div>
+            <span class="text-xs font-bold">Sách & Tài liệu</span>
+          </a>
+          <a href="/products?category=dien-tu" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-secondary">devices</span></div>
+            <span class="text-xs font-bold">Điện tử</span>
+          </a>
+          <a href="/products?category=do-dung" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-tertiary-fixed rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-tertiary">home_work</span></div>
+            <span class="text-xs font-bold">Đồ dùng</span>
+          </a>
+          <a href="/products?category=thoi-trang" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-primary">apparel</span></div>
+            <span class="text-xs font-bold">Thời trang</span>
+          </a>
+          <a href="/products?category=xe" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-secondary">pedal_bike</span></div>
+            <span class="text-xs font-bold">Xe & Phương tiện</span>
+          </a>
+          <a href="/products" class="bg-white p-5 rounded-xl text-center hover:shadow-lg transition-all cursor-pointer group">
+            <div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-outline">more_horiz</span></div>
+            <span class="text-xs font-bold">Khác</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- FEATURED PRODUCTS (loaded via AJAX) -->
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Tin đăng nổi bật</h2>
+          <a href="/products" class="text-primary font-bold text-sm underline underline-offset-4 decoration-2">Xem tất cả</a>
+        </div>
+        <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <!-- Products loaded via AJAX -->
+          <div class="skeleton h-64 rounded-xl"></div>
+          <div class="skeleton h-64 rounded-xl"></div>
+          <div class="skeleton h-64 rounded-xl"></div>
+          <div class="skeleton h-64 rounded-xl"></div>
+        </div>
+      </section>
+
+      <!-- BENTO PROMO -->
+      <section class="grid md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 bg-gradient-to-br from-[#00464d] to-[#005f69] rounded-2xl p-8 text-white relative overflow-hidden group">
+          <div class="relative z-10 space-y-3 max-w-sm">
+            <h4 class="text-3xl font-extrabold">Dọn kho – Đổi mới</h4>
+            <p class="text-[#a7eefa]/80">Bạn có giáo trình cũ không dùng đến? Đăng tin ngay để nhận voucher ưu đãi từ Circle K & GS25.</p>
+            <a href="/post-ad" class="inline-block bg-white text-[#00464d] px-6 py-2.5 rounded-lg font-bold hover:bg-[#a7eefa] transition-all mt-2">Đăng ngay</a>
+          </div>
+          <span class="material-symbols-outlined absolute -bottom-8 -right-8 text-white/10 rotate-12 group-hover:rotate-45 transition-transform duration-700" style="font-size:200px">inventory_2</span>
+        </div>
+        <div class="bg-tertiary-fixed rounded-2xl p-8 flex flex-col justify-between group">
+          <h4 class="text-2xl font-extrabold text-tertiary">Câu lạc bộ UEH</h4>
+          <p class="text-tertiary/70 font-medium mt-2">Hỗ trợ các CLB thanh lý đồ sự kiện hoặc gây quỹ từ thiện.</p>
+          <a href="/post-ad" class="text-tertiary font-black flex items-center gap-2 mt-4 group-hover:translate-x-1 transition-transform">Đăng tin cho CLB <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+      </section>
+
+      <!-- SECTION A: WANTED BOARD -->
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <span class="inline-block px-2 py-0.5 rounded bg-[#fff8e8] text-[#c68a00] text-xs font-bold mb-1">Đang cần</span>
+            <h2 class="text-2xl font-bold">Sinh viên đang tìm kiếm</h2>
+          </div>
+          <a href="/products?listingType=wanted" class="text-[#c68a00] font-bold text-sm hover:underline underline-offset-4 decoration-2">Xem tất cả bài đang cần →</a>
+        </div>
+        <div id="homepage-wanted-board" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="skeleton h-28 rounded-xl"></div>
+          <div class="skeleton h-28 rounded-xl"></div>
+          <div class="skeleton h-28 rounded-xl"></div>
+        </div>
+      </section>
+
+      <!-- SECTION B: CAMPUS MEETING POINTS -->
+      <section>
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold">Gặp gỡ & Giao dịch tại UEH</h2>
+          <p class="text-sm text-on-surface-variant mt-1">Các điểm hẹn an toàn trong khuôn viên trường</p>
+        </div>
+        <div class="flex gap-4 overflow-x-auto pb-2 -mx-2 px-2">
+          <div class="min-w-[200px] flex-shrink-0 bg-white rounded-xl p-5 shadow-sm border border-outline-variant/20">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-lg">📍</span>
+              <h4 class="font-bold text-on-surface">Cơ sở A</h4>
+              <span class="ml-auto px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">An toàn</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">59 Nguyễn Đình Chiểu, Quận 3</p>
+          </div>
+          <div class="min-w-[200px] flex-shrink-0 bg-white rounded-xl p-5 shadow-sm border border-outline-variant/20">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-lg">📍</span>
+              <h4 class="font-bold text-on-surface">Cơ sở B</h4>
+              <span class="ml-auto px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">An toàn</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">279 Nguyễn Tri Phương, Quận 10</p>
+          </div>
+          <div class="min-w-[200px] flex-shrink-0 bg-white rounded-xl p-5 shadow-sm border border-outline-variant/20">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-lg">📍</span>
+              <h4 class="font-bold text-on-surface">Cơ sở N</h4>
+              <span class="ml-auto px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">An toàn</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">Nguyễn Văn Linh, Quận 7</p>
+          </div>
+          <div class="min-w-[200px] flex-shrink-0 bg-white rounded-xl p-5 shadow-sm border border-outline-variant/20">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-lg">📍</span>
+              <h4 class="font-bold text-on-surface">Thư viện</h4>
+              <span class="ml-auto px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-semibold">An toàn</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">Tầng 2, Cơ sở A</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION C: GREEN SCORE BANNER -->
+      <section class="bg-gradient-to-r from-[#e9f9ef] to-[#dff5e8] rounded-2xl p-8 border border-[#2ecc71]/20">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div class="space-y-3">
+            <h3 class="text-2xl font-extrabold text-[#27ae60]">🌿 UEH Green Score</h3>
+            <p class="text-on-surface-variant max-w-lg">Mỗi món đồ tái sử dụng là một bước nhỏ cho môi trường lớn. Theo dõi đóng góp xanh của bạn!</p>
+            <div class="flex flex-wrap gap-4 text-sm font-medium text-[#27ae60]">
+              <span class="flex items-center gap-1">♻️ 500+ món tái sử dụng</span>
+              <span class="flex items-center gap-1">💰 Hàng triệu đồng tiết kiệm</span>
+              <span class="flex items-center gap-1">🌱 CO2 giảm đáng kể</span>
+            </div>
+          </div>
+          <a href="/dashboard" class="inline-flex items-center gap-2 bg-[#27ae60] text-white px-6 py-3 rounded-xl font-bold hover:brightness-110 transition-all whitespace-nowrap">
+            Xem Green Score của tôi →
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</main>
+
+<%- include('partials/footer') %>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="/js/app.js"></script>
+<script src="/js/products.js"></script>
+<script>
+  // ── Hero Slider ──
+  let currentSlide = 0;
+  const totalSlides = 3;
+  let heroInterval;
+
+  function goToSlide(index) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    
+    slides.forEach((s, i) => {
+      if (i === index) {
+        s.style.opacity = '1';
+        s.style.zIndex = '10';
+        s.style.transform = 'scale(1)';
+        // Animate content
+        const content = s.querySelector('.hero-content');
+        if (content) { content.style.transform = 'translateY(0)'; content.style.opacity = '1'; }
+      } else {
+        s.style.opacity = '0';
+        s.style.zIndex = '0';
+        s.style.transform = 'scale(1.05)';
+        const content = s.querySelector('.hero-content');
+        if (content) { content.style.transform = 'translateY(30px)'; content.style.opacity = '0'; }
+      }
+    });
+    dots.forEach((d, i) => {
+      d.className = i === index 
+        ? 'hero-dot w-10 h-1.5 rounded-full bg-white/80 transition-all duration-300' 
+        : 'hero-dot w-6 h-1.5 rounded-full bg-white/30 transition-all duration-300';
+    });
+    currentSlide = index;
+
+    // Animate counters on slide 3
+    if (index === 2) animateCounters();
+
+    resetHeroInterval();
+  }
+
+  function nextSlide() { goToSlide((currentSlide + 1) % totalSlides); }
+  function prevSlide() { goToSlide((currentSlide - 1 + totalSlides) % totalSlides); }
+
+  function resetHeroInterval() {
+    clearInterval(heroInterval);
+    heroInterval = setInterval(nextSlide, 5000);
+  }
+
+  // Counter animation
+  function animateCounters() {
+    document.querySelectorAll('.hero-counter').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      if (!target) return;
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { el.textContent = target.toLocaleString('vi-VN'); clearInterval(timer); return; }
+        el.textContent = Math.floor(current).toLocaleString('vi-VN');
+      }, 25);
+    });
+  }
+
+  // Init hero content transitions
+  document.querySelectorAll('.hero-content').forEach(c => {
+    c.style.transition = 'transform 0.8s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease';
+  });
+
+  // Start auto-play
+  heroInterval = setInterval(nextSlide, 5000);
+
+  // Load featured products on homepage
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const res = await fetch('/api/products?limit=8&listingType=sell');
+      const data = await res.json();
+      const container = document.getElementById('featured-products');
+      if (data.success && data.data.length > 0) {
+        container.innerHTML = data.data.map(p => window.AppUtils.productCard(p)).join('');
+      } else {
+        container.innerHTML = '<p class="col-span-full text-center text-on-surface-variant py-8">Chưa có sản phẩm nào. Hãy đăng tin đầu tiên!</p>';
+      }
+    } catch (err) {
+      console.error('Failed to load products:', err);
+      document.getElementById('featured-products').innerHTML = '<p class="col-span-full text-center text-on-surface-variant py-8">Không thể tải sản phẩm</p>';
+    }
+  });
+
+  // Load wanted board
+  (async function loadWantedBoard() {
+    const container = document.getElementById('homepage-wanted-board');
+    if (!container) return;
+    try {
+      const res = await fetch('/api/products?listingType=wanted&limit=3&status=available');
+      const data = await res.json();
+      if (!data.success || !data.data.length) {
+        container.innerHTML = '<p class="col-span-3 text-center text-sm text-on-surface-variant py-6">Chưa có nhu cầu nào.</p>';
+        return;
+      }
+      const urgencyMap = { high: '🔴 Cần gấp', medium: '🟡 Trong tuần', low: '🟢 Chưa gấp' };
+      container.innerHTML = data.data.map(p => {
+        const esc = window.AppUtils?.esc || (s => s.replace(/</g,'&lt;'));
+        const badge = p.courseCode ? `<span class="px-2 py-0.5 rounded-full bg-[#fff3dc] text-[#c68a00] text-xs font-bold">${esc(p.courseCode)}</span>` : '';
+        const faculty = p.faculty ? `<span class="px-2 py-0.5 rounded-full bg-primary-fixed/40 text-primary text-xs font-semibold">${esc(p.faculty)}</span>` : '';
+        const urgency = urgencyMap[p.urgency] || '🟡 Trong tuần';
+        const budget = (p.budgetMin || p.budgetMax)
+          ? `${(p.budgetMin||0).toLocaleString('vi-VN')}đ – ${(p.budgetMax||0).toLocaleString('vi-VN')}đ`
+          : 'Thương lượng';
+        return `<div class="bg-[#fff8e8] border border-[#f4ddb0] rounded-xl p-4 flex flex-col gap-2 hover:shadow-md transition-shadow">
+          <div class="flex flex-wrap gap-1">${badge}${faculty}</div>
+          <p class="font-semibold text-sm text-on-surface line-clamp-2">${esc(p.title)}</p>
+          <div class="flex items-center justify-between mt-auto pt-2">
+            <span class="text-xs text-[#c68a00] font-medium">${urgency}</span>
+            <span class="text-xs text-on-surface-variant">${budget}</span>
+          </div>
+          <a href="/products?listingType=wanted" class="block w-full text-center bg-[#c68a00] text-white text-xs font-bold py-2 rounded-lg hover:brightness-110 transition-all mt-1">Tôi có món này</a>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      container.innerHTML = '<p class="col-span-3 text-center text-sm text-on-surface-variant py-6">Không thể tải dữ liệu.</p>';
+    }
+  })();
+</script>
+</body>
+</html>

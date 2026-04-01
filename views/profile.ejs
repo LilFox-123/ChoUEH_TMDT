@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hồ sơ - Chợ UEH</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="/css/custom.css" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#00464d","primary-container":"#005f69","primary-fixed":"#a7eefa","tertiary":"#712600","surface":"#f2fbfc","surface-container-lowest":"#ffffff","surface-container":"#e7f0f0","surface-container-high":"#e1eaeb","on-surface":"#151d1e","on-surface-variant":"#3f484a","outline":"#6f797a","outline-variant":"#bec8ca","background":"#f2fbfc","accent":"#EC6D33"},fontFamily:{"headline":["Plus Jakarta Sans"],"body":["Inter"]},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+
+<%- include('partials/navbar') %>
+
+<main class="pt-24 pb-16 max-w-3xl mx-auto px-6">
+  <h1 class="text-3xl font-extrabold text-primary mb-8">Hồ sơ của bạn</h1>
+
+  <div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm ghost-border">
+    <form id="profile-form" class="space-y-6">
+      <div class="flex items-center gap-6 mb-8">
+        <div class="w-20 h-20 bg-primary-fixed rounded-full flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-4xl">person</span>
+        </div>
+        <div>
+          <h2 id="profile-name" class="text-xl font-bold"></h2>
+          <p id="profile-email" class="text-on-surface-variant text-sm"></p>
+          <p id="profile-studentId" class="text-on-surface-variant text-sm"></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-on-surface-variant mb-2">Họ và tên</label>
+          <input id="edit-name" class="w-full px-4 py-3 rounded-xl bg-surface-container border-none focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" type="text"/>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-on-surface-variant mb-2">Số điện thoại</label>
+          <input id="edit-phone" class="w-full px-4 py-3 rounded-xl bg-surface-container border-none focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" type="tel"/>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-on-surface-variant mb-2">Khoa</label>
+          <select id="edit-department" class="w-full px-4 py-3 rounded-xl bg-surface-container border-none focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none">
+            <option>Khoa Kinh tế</option><option>Khoa Quản trị</option><option>Khoa Tài chính</option><option>Khoa Kế toán</option><option>Khoa Công nghệ thông tin kinh doanh</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-on-surface-variant mb-2">Khóa</label>
+          <select id="edit-year" class="w-full px-4 py-3 rounded-xl bg-surface-container border-none focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none">
+            <option>Khóa 47</option><option>Khóa 48</option><option>Khóa 49</option><option>Khóa 50</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-on-surface-variant mb-2">Giới thiệu bản thân</label>
+        <textarea id="edit-bio" class="w-full px-4 py-3 rounded-xl bg-surface-container border-none focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none resize-none" rows="3" placeholder="Viết vài dòng về bạn..."></textarea>
+      </div>
+      <div class="flex gap-4">
+        <button type="submit" class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-container transition-all">Lưu thay đổi</button>
+        <button type="button" id="logout-btn" class="bg-red-50 text-red-600 px-8 py-3 rounded-xl font-bold hover:bg-red-100 transition-all">Đăng xuất</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="/js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = window.AppUtils.getUser() || await window.AppUtils.syncCurrentUser();
+  if (!user) { window.location.href = '/login'; return; }
+
+  // Load profile
+  try {
+    const res = await fetch(`/api/users/${user._id}`);
+    const data = await res.json();
+    if (data.success) {
+      const u = data.user;
+      document.getElementById('profile-name').textContent = u.name;
+      document.getElementById('profile-email').textContent = u.email;
+      document.getElementById('profile-studentId').textContent = `MSSV: ${u.studentId}`;
+      document.getElementById('edit-name').value = u.name;
+      document.getElementById('edit-phone').value = u.phone || '';
+      document.getElementById('edit-department').value = u.department || 'Khoa Kinh tế';
+      document.getElementById('edit-year').value = u.year || 'Khóa 49';
+      document.getElementById('edit-bio').value = u.bio || '';
+    }
+  } catch (err) { console.error(err); }
+
+  // Update profile
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/users/${user._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('edit-name').value,
+          phone: document.getElementById('edit-phone').value,
+          department: document.getElementById('edit-department').value,
+          year: document.getElementById('edit-year').value,
+          bio: document.getElementById('edit-bio').value
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.AppUtils.showToast('Cập nhật hồ sơ thành công!', 'success');
+        window.AppUtils.saveAuth(data.user);
+        window.AppUtils.updateNavbar();
+      } else {
+        window.AppUtils.showToast(data.message, 'error');
+      }
+    } catch (err) { window.AppUtils.showToast('Lỗi kết nối', 'error'); }
+  });
+
+  // Logout
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    window.AppUtils.logout();
+  });
+});
+</script>
+</body>
+</html>
