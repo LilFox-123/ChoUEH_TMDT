@@ -171,33 +171,9 @@ Env: MONGODB_URI*, JWT_SECRET*, NODE_ENV=production
 - JWT (30d expiry)
 - bcrypt (salt 10)
 
-🔧 **Improvements**:
-```bash
-npm i express-validator helmet-csp
-# Add tests: supertest jest
-```
 
-## 🚧 Roadmap
-- [ ] Cloudinary image upload
-- [ ] Push notifications (Socket.io)
-- [ ] Payments (Momo/VNPay)
-- [ ] Advanced search (Elasticsearch)
-- [ ] Mobile app (React Native)
-- [ ] Tests (95% coverage)
 
-## 🤝 Contributing
-1. Fork repo
-2. `git checkout -b feature/xyz`
-3. Commit: `git commit -m "feat: add xyz"`
-4. Push & PR
 
-**Code style**: Prettier + ESLint (setup soon).
 
-## 📄 License
-MIT - Feel free to use/modify! 🎉
 
----
 
-**👨‍💻 Author**: UEH Student Dev Team  
-**📧 Contact**: cho.ueh@example.com  
-**🌟 Star repo nếu hữu ích!** ⭐
