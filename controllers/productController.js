@@ -380,7 +380,7 @@ exports.createProduct = async (req, res) => {
 
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map((file) => `/uploads/${file.filename}`);
+      images = req.files.map((file) => file.path);
     }
 
     const productPayload = {
@@ -450,7 +450,7 @@ exports.updateProduct = async (req, res) => {
     }
 
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+      const newImages = req.files.map((file) => file.path);
       updates.images = [...(product.images || []), ...newImages];
     }
 
@@ -500,17 +500,25 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
+    // Xóa ảnh trên Cloudinary khi xóa sản phẩm
     if (product.images && product.images.length > 0) {
-      product.images.forEach((img) => {
-        if (img && img.startsWith('/uploads/')) {
-          const imgPath = path.join(__dirname, '..', 'public', img);
+      const cloudinary = require('cloudinary').v2;
+      for (const imgUrl of product.images) {
+        if (imgUrl && imgUrl.includes('cloudinary.com')) {
           try {
-            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+            // Lấy public_id từ URL Cloudinary (phần sau /upload/vXXX/)
+            const parts = imgUrl.split('/');
+            const uploadIndex = parts.indexOf('upload');
+            if (uploadIndex !== -1) {
+              const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
+              const publicId = publicIdWithExt.replace(/\.[^/.]+$/, '');
+              await cloudinary.uploader.destroy(publicId);
+            }
           } catch (error) {
-            console.error('File delete error:', error.message);
+            console.error('Cloudinary delete error:', error.message);
           }
         }
-      });
+      }
     }
 
     await Product.findByIdAndDelete(req.params.id);
