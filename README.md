@@ -11,7 +11,7 @@
 
 **Nền tảng mua bán đồ cũ dành riêng cho cộng đồng sinh viên Đại học Kinh tế TP.HCM (UEH)**
 
-[🌐 Live Demo](https://cho-ueh.onrender.com) · [📋 Báo cáo đồ án](#) · [🐛 Báo lỗi](../../issues)
+[🌐 Live Demo](https://choueh-tmdt.onrender.com) · [📋 Báo cáo đồ án](#) · [🐛 Báo lỗi](../../issues)
 
 </div>
 
