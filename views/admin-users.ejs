@@ -8,11 +8,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link href="/css/custom.css" rel="stylesheet"/>
   <script>tailwind.config={theme:{extend:{colors:{"primary":"#00464d","primary-container":"#005f69","surface":"#f2fbfc","on-surface":"#151d1e","on-surface-variant":"#3f484a","outline":"#6f797a","accent":"#EC6D33"},fontFamily:{"headline":["Plus Jakarta Sans"],"body":["Inter"]}}}}</script>
+  <style>
+    #admin-mobile-bar { display: flex; }
+    #admin-sidebar { transform: translateX(-100%); }
+    #admin-main { margin-left: 0; padding: 1rem; padding-top: 4rem; }
+    @media (min-width: 1024px) {
+      #admin-mobile-bar { display: none; }
+      #admin-sidebar { transform: translateX(0); }
+      #admin-main { margin-left: 16rem; padding: 2rem; }
+    }
+  </style>
 </head>
 <body class="bg-[#f0f4f8] text-on-surface min-h-screen">
+
+<!-- Mobile top bar -->
+<div id="admin-mobile-bar" class="fixed top-0 left-0 right-0 z-50 bg-[#0f2027] px-4 py-3 items-center justify-between">
+  <a href="/" class="cho-ueh-logo logo-white">
+    <div class="logo-emblem"><svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M11 3L2 7.5L11 12L20 7.5L11 3Z" fill="white" opacity="0.95"/><path d="M5 9.5V14.5C5 14.5 7.5 17 11 17C14.5 17 17 14.5 17 14.5V9.5" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div>
+    <div class="logo-wordmark"><span class="logo-cho">Chợ</span><span class="logo-ueh-text">UEH<span class="accent-dot">.</span></span></div>
+  </a>
+  <button id="sidebar-toggle" class="text-white p-2 rounded-lg transition-all" style="background:transparent;border:none;cursor:pointer;">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+</div>
+<div id="sidebar-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:40;"></div>
+
 <div class="flex min-h-screen">
   <!-- Sidebar -->
-  <aside class="w-64 bg-[#0f2027] text-white flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+  <aside id="admin-sidebar" class="w-64 bg-[#0f2027] text-white flex flex-col fixed h-full z-50" style="transition:transform 0.3s;">
     <div class="p-6 border-b border-white/10">
       <a href="/" class="cho-ueh-logo logo-white">
         <div class="logo-emblem"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3L2 7.5L11 12L20 7.5L11 3Z" fill="white" opacity="0.95"/><path d="M5 9.5V14.5C5 14.5 7.5 17 11 17C14.5 17 17 14.5 17 14.5V9.5" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></div>
@@ -29,7 +52,7 @@
     </nav>
   </aside>
 
-  <main class="flex-1 lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
+  <main id="admin-main" class="flex-1">
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-3xl font-extrabold text-[#0f2027]">Quản lý Người dùng</h1>
@@ -97,19 +120,27 @@
 <script src="/js/admin.js"></script>
 <script>document.addEventListener('DOMContentLoaded', () => window.AdminApp && window.AdminApp.initUsers());</script>
 <script>
-const sidebarToggle = document.getElementById('sidebar-toggle');
-const sidebar = document.querySelector('aside');
-const overlay = document.getElementById('sidebar-overlay');
-function openSidebar() {
-  sidebar.classList.remove('-translate-x-full');
-  overlay.classList.remove('hidden');
-}
-function closeSidebar() {
-  sidebar.classList.add('-translate-x-full');
-  overlay.classList.add('hidden');
-}
-sidebarToggle?.addEventListener('click', openSidebar);
-overlay?.addEventListener('click', closeSidebar);
+(function() {
+  var toggle = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('admin-sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  function openSidebar() {
+    sidebar.style.transform = 'translateX(0)';
+    overlay.style.display = 'block';
+  }
+  function closeSidebar() {
+    sidebar.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
+  }
+  if (toggle) toggle.addEventListener('click', openSidebar);
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+  var navLinks = sidebar ? sidebar.querySelectorAll('a') : [];
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth < 1024) closeSidebar();
+    });
+  });
+})();
 </script>
 </body>
 </html>
