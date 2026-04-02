@@ -76,6 +76,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('product-meta').textContent = `${isWanted ? 'Đăng nhu cầu tại' : 'Đăng tại'} ${product.location} • ${window.AppUtils.timeAgo(product.createdAt)}`;
     document.getElementById('product-description').textContent = product.description;
 
+    const categoryLabels = {
+      'sach': 'Sách & Tài liệu', 'dien-tu': 'Điện tử',
+      'do-dung': 'Đồ dùng', 'thoi-trang': 'Thời trang',
+      'xe': 'Xe & Phương tiện', 'khac': 'Khác'
+    };
+    const quickBlock = document.getElementById('quick-info-block');
+    if (quickBlock) {
+      quickBlock.classList.remove('hidden');
+      const views = document.getElementById('info-views');
+      const time = document.getElementById('info-time');
+      const cat = document.getElementById('info-category');
+      const loc = document.getElementById('info-location');
+      if (views) views.textContent = (product.views || 0) + ' lượt';
+      if (time) time.textContent = product.timeAgo || 'Vừa đăng';
+      if (cat) cat.textContent = categoryLabels[product.category] || product.category || '–';
+      if (loc) loc.textContent = product.location || '–';
+    }
+
     const wantedContextCard = document.getElementById('wanted-context-card');
     const wantedContextMeta = document.getElementById('wanted-context-meta');
     if (isWanted) {
