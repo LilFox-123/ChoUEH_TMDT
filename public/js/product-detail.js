@@ -85,13 +85,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (quickBlock) {
       quickBlock.classList.remove('hidden');
       const views = document.getElementById('info-views');
-      const time = document.getElementById('info-time');
-      const cat = document.getElementById('info-category');
-      const loc = document.getElementById('info-location');
+      const time  = document.getElementById('info-time');
+      const cat   = document.getElementById('info-category');
+      const loc   = document.getElementById('info-location');
       if (views) views.textContent = (product.views || 0) + ' lượt';
-      if (time) time.textContent = product.timeAgo || 'Vừa đăng';
-      if (cat) cat.textContent = categoryLabels[product.category] || product.category || '–';
-      if (loc) loc.textContent = product.location || '–';
+      if (time)  time.textContent  = product.timeAgo || 'Vừa đăng';
+      if (cat)   cat.textContent   = categoryLabels[product.category] || product.category || '–';
+      if (loc)   loc.textContent   = product.location || '–';
+    }
+
+    // Share block
+    const shareCopyBtn = document.getElementById('share-copy-link');
+    const shareCopiedMsg = document.getElementById('share-copied-msg');
+    const shareFbLink = document.getElementById('share-facebook');
+    const shareZaloLink = document.getElementById('share-zalo');
+    const pageUrl = window.location.href;
+    if (shareFbLink) shareFbLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+    if (shareZaloLink) shareZaloLink.href = `https://zalo.me/share/url?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(product.title || '')}`;
+    if (shareCopyBtn) {
+      shareCopyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(pageUrl).then(() => {
+          if (shareCopiedMsg) { shareCopiedMsg.classList.remove('hidden'); setTimeout(() => shareCopiedMsg.classList.add('hidden'), 2500); }
+        });
+      });
+    }
+
+    // Report block
+    const reportBtn = document.getElementById('report-btn');
+    const reportModal = document.getElementById('report-modal');
+    const reportCancel = document.getElementById('report-cancel');
+    const reportSubmit = document.getElementById('report-submit');
+    if (reportBtn && reportModal) {
+      reportBtn.addEventListener('click', () => { reportModal.classList.remove('hidden'); reportModal.classList.add('flex'); });
+      reportCancel.addEventListener('click', () => { reportModal.classList.add('hidden'); reportModal.classList.remove('flex'); });
+      reportModal.addEventListener('click', (e) => { if (e.target === reportModal) { reportModal.classList.add('hidden'); reportModal.classList.remove('flex'); } });
+      reportSubmit.addEventListener('click', () => {
+        const reason = document.querySelector('input[name="report-reason"]:checked');
+        if (!reason) { alert('Vui lòng chọn lý do báo cáo.'); return; }
+        reportModal.classList.add('hidden'); reportModal.classList.remove('flex');
+        alert('Cảm ơn bạn đã báo cáo. Chúng tôi sẽ xem xét sớm nhất có thể.');
+      });
     }
 
     const wantedContextCard = document.getElementById('wanted-context-card');
