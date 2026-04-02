@@ -1,8 +1,7 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Message = require('../models/Message');
-const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
 const MEETING_POINT_OPTIONS = [
   'Cơ sở A - 59 Nguyễn Đình Chiểu',
@@ -194,6 +193,23 @@ const attachListingContextOnUpdate = (updates, unset, body, existingProduct) => 
   };
 };
 
+// Helper: xóa ảnh trên Cloudinary theo URL
+const deleteCloudinaryImage = async (imgUrl) => {
+  if (imgUrl && imgUrl.includes('cloudinary.com')) {
+    try {
+      const parts = imgUrl.split('/');
+      const uploadIndex = parts.indexOf('upload');
+      if (uploadIndex !== -1) {
+        const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
+        const publicId = publicIdWithExt.replace(/\.[^/.]+$/, '');
+        await cloudinary.uploader.destroy(publicId);
+      }
+    } catch (error) {
+      console.error('Cloudinary delete error:', error.message);
+    }
+  }
+};
+
 exports.getDashboardStats = async (req, res) => {
   try {
     const [totalUsers, totalProducts, totalMessages, recentProducts, recentUsers] = await Promise.all([
@@ -287,15 +303,13 @@ exports.deleteUser = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Không thể xóa chính mình' });
     }
 
+    // Xóa ảnh trên Cloudinary khi xóa user
     const products = await Product.find({ seller: req.params.id });
     for (const product of products) {
       if (product.images) {
-        product.images.forEach((img) => {
-          if (img && img.startsWith('/uploads/')) {
-            const imgPath = path.join(__dirname, '..', 'public', img);
-            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-          }
-        });
+        for (const img of product.images) {
+          await deleteCloudinaryImage(img);
+        }
       }
     }
 
@@ -375,8 +389,9 @@ exports.updateProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: listingValidation });
     }
 
+    // Dùng file.path để lấy URL Cloudinary
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
+      const newImages = req.files.map((file) => file.path);
       updates.images = [...(product.images || []), ...newImages];
     }
 
@@ -403,17 +418,11 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm' });
     }
 
+    // Xóa ảnh trên Cloudinary
     if (product.images && product.images.length > 0) {
-      product.images.forEach((img) => {
-        if (img && img.startsWith('/uploads/')) {
-          const imgPath = path.join(__dirname, '..', 'public', img);
-          try {
-            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-          } catch (error) {
-            console.error('File delete error:', error.message);
-          }
-        }
-      });
+      for (const img of product.images) {
+        await deleteCloudinaryImage(img);
+      }
     }
 
     await Product.findByIdAndDelete(req.params.id);
@@ -435,15 +444,8 @@ exports.removeProductImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Chỉ số ảnh không hợp lệ' });
     }
 
-    const imgUrl = product.images[index];
-    if (imgUrl && imgUrl.startsWith('/uploads/')) {
-      const imgPath = path.join(__dirname, '..', 'public', imgUrl);
-      try {
-        if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-      } catch (error) {
-        console.error('File delete error:', error.message);
-      }
-    }
+    // Xóa ảnh trên Cloudinary
+    await deleteCloudinaryImage(product.images[index]);
 
     product.images.splice(index, 1);
     await product.save();
