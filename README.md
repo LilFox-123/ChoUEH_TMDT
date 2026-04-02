@@ -1,260 +1,202 @@
-# 🛒 Chợ UEH — Sàn Giao Dịch Nội Bộ Sinh Viên
+# 🚀 Chợ UEH Marketplace
 
-<div align="center">
+[![Node.js](https://img.shields.io/badge/Node.js-v18+-informational?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.x-brightgreen?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-green?logo=mongodb)](https://mongodb.com/)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-![Node.js](https://img.shields.io/badge/Node.js-22.x-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-4.18-000000?style=for-the-badge&logo=express&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![EJS](https://img.shields.io/badge/EJS-Template-B4CA65?style=for-the-badge)
-![Tailwind](https://img.shields.io/badge/Tailwind_CSS-CDN-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+**Nền tảng mua bán đồ cũ thông minh dành riêng cho sinh viên Đại học Kinh tế TP.HCM (UEH)** 📱✨
 
-**Nền tảng mua bán đồ cũ dành riêng cho cộng đồng sinh viên Đại học Kinh tế TP.HCM (UEH)**
+![Hero Banner](https://via.placeholder.com/1200x400/00464d/ffffff?text=Ch%E1%BB%9D+UEH+-+Mua+b%C3%A1n+th%C3%B4ng+minh+cho+sinh+vi%C3%AAn) *(Replace with actual screenshot)*
 
-[🌐 Live Demo](https://choueh-tmdt.onrender.com) · [📋 Báo cáo đồ án](#) · [🐛 Báo lỗi](../../issues)
+## ✨ Tính năng chính
+| 📋 CRUD Sản phẩm | 💬 Hệ thống tin nhắn | 👑 Admin Dashboard | 🎯 UEH Exclusive |
+|---|---|---|---|
+| Đăng tin bán/mua đồ cũ, upload 6 ảnh | Chat 1:1 giữa người mua & bán | Quản lý user/sản phẩm | Chỉ sinh viên UEH (email + MSSV) |
+| Tìm kiếm theo môn học/Khoa | Đếm tin nhắn chưa đọc | Stats tổng quan | Điểm gặp: Cơ sở A/B/N, Thư viện |
+| Lọc giá/loại/gấp rút | Conversations realtime | Xóa/sửa sản phẩm | Khoa học, năm học, khung giờ |
 
-</div>
+**Các trang chính**: Home, Đăng nhập/ĐK, Sản phẩm, Chi tiết SP, Đăng tin, Dashboard, Profile, Tin nhắn, Admin.
 
----
-
-## 📖 Giới thiệu
-
-**Chợ UEH** là ứng dụng web marketplace được xây dựng như đồ án môn học Thương mại điện tử tại UEH. Nền tảng cho phép sinh viên UEH mua bán, trao đổi đồ cũ, giáo trình, thiết bị học tập trong khuôn viên trường — hoàn toàn miễn phí và an toàn.
-
-Điểm khác biệt so với các marketplace thông thường (Chợ Tốt, Facebook Marketplace):
-
-| Tính năng | Chợ UEH | Marketplace thông thường |
-|---|:---:|:---:|
-| Xác thực email UEH | ✅ | ❌ |
-| Gắn mã môn học / khoa | ✅ | ❌ |
-| Điểm hẹn trong campus | ✅ | ❌ |
-| Bảng nhu cầu "Đang cần" | ✅ | ❌ |
-| UEH Green Score | ✅ | ❌ |
-| Chat nội bộ sinh viên | ✅ | ❌ |
-
----
-
-## ✨ Tính năng nổi bật
-
-### 🎓 Ngữ cảnh học phần UEH
-Mỗi bài đăng có thể gắn thông tin môn học (mã môn, tên môn, khoa, học kỳ, năm phù hợp) giúp sinh viên tìm đúng giáo trình theo từng môn học.
-
-### 📍 Điểm hẹn campus
-6 địa điểm cố định trong khuôn viên UEH (Cơ sở A, B, N · Thư viện · Căn tin · Sảnh chính) kèm khung giờ giao nhận khớp lịch học.
-
-### 📋 Bảng nhu cầu (Wanted Board)
-Ngoài đăng bán, sinh viên có thể đăng "Đang cần" để người khác chủ động liên hệ khi có món phù hợp.
-
-### ♻️ UEH Green Score
-Gamification theo dõi tác động môi trường: số món đồ tái sử dụng, ước tính tiền tiết kiệm, CO₂ giảm — với 3 cấp độ Xanh Mới → Xanh Tích Cực → Xanh Champion.
-
-### 💬 Chat nội bộ
-Nhắn tin trực tiếp giữa người mua và người bán, có badge thông báo tin nhắn chưa đọc trên navbar.
-
-### 🛡️ Bảo mật
-- JWT lưu cookie `httpOnly + sameSite: strict` (không dùng localStorage)
-- XSS protection — toàn bộ input render qua `escapeHTML()`
-- Ẩn thông tin nhạy cảm (email, MSSV, SĐT) khỏi API công khai
-- Rate limiting: 200 req/15min (API) · 20 req/15min (Auth)
-- Helmet + CORS
-
----
-
-## 🏗️ Kiến trúc hệ thống
-
+## 🛠️ Tech Stack
 ```
-┌─────────────────────────────────────────────────┐
-│                   CLIENT (Browser)               │
-│         Tailwind CSS · EJS · Vanilla JS          │
-└─────────────────┬───────────────────────────────┘
-                  │ HTTP
-┌─────────────────▼───────────────────────────────┐
-│              EXPRESS SERVER (Node.js)            │
-│                                                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
-│  │  Routes  │→ │Controllers│→ │    Models    │   │
-│  └──────────┘  └──────────┘  └──────┬───────┘   │
-│                                     │            │
-│  Middleware: Helmet · CORS · JWT     │            │
-│             Rate Limit · Cookie      │            │
-└─────────────────────────────────────┼────────────┘
-                                      │ Mongoose
-┌─────────────────────────────────────▼────────────┐
-│              MongoDB Atlas (Cloud)                │
-│         Users · Products · Messages               │
-└───────────────────────────────────────────────────┘
+Backend: Node.js 18+ | Express 4.x | Mongoose 8.x
+Frontend: EJS | Tailwind CSS 3 (CDN) | Custom JS per page
+Auth: JWT + Cookies | bcryptjs
+Upload: Multer (local public/uploads)
+Security: Helmet | CORS | Rate Limit (200req/15min)
+```
+**Dependencies chính**:
+```bash
+npm i express mongoose ejs multer helmet cors cookie-parser jsonwebtoken bcryptjs express-rate-limit dotenv
 ```
 
----
-
-## 📁 Cấu trúc thư mục
-
+## 📂 Cấu trúc dự án
 ```
 ChoUEH_TMDT/
-├── config/
-│   ├── db.js               # Kết nối MongoDB
-│   └── multer.js           # Cấu hình upload ảnh
-├── controllers/            # Xử lý logic nghiệp vụ
-│   ├── authController.js
-│   ├── productController.js
-│   ├── messageController.js
-│   ├── userController.js
-│   └── adminController.js
-├── middleware/
-│   ├── auth.js             # Xác thực JWT
-│   └── admin.js            # Kiểm tra quyền admin
-├── models/
-│   ├── User.js
-│   ├── Product.js
-│   └── Message.js
-├── routes/                 # Định nghĩa API và view routes
-├── utils/
-│   └── userPrivacy.js      # Lọc dữ liệu nhạy cảm
-├── views/                  # EJS templates
-│   ├── partials/           # Navbar, Footer
-│   ├── index.ejs
-│   ├── products.ejs
-│   ├── product-detail.ejs
-│   ├── post-ad.ejs
-│   ├── dashboard.ejs
-│   ├── messages.ejs
-│   ├── profile.ejs
-│   └── admin.ejs
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── uploads/
-├── seed.js                 # Tạo dữ liệu mẫu
-├── patch-products.js       # Cập nhật ngữ cảnh UEH cho sản phẩm
-├── render.yaml             # Cấu hình deploy Render
-└── server.js               # Entry point
+├── config/           # DB connect, Multer config
+├── controllers/      # Business logic (auth, product, message...)
+├── middleware/       # Auth, admin check
+├── models/           # User, Product, Message schemas
+├── public/           # CSS/JS + uploads/
+├── routes/           # API + View routes
+├── utils/            # User privacy helpers
+├── views/            # EJS templates + partials
+├── server.js         # 🚀 Entry point
+├── seed.js           # 🌱 Sample data
+├── package.json      # 📦 Dependencies
+└── README.md         # 📖 You're reading it!
 ```
 
----
+## 🚀 Quick Start (5 phút)
+### 1. Clone & Install
+```bash
+git clone <repo-url>
+cd ChoUEH_TMDT
+npm install
+```
 
-## 👤 Tài khoản demo
+### 2. Environment (.env)
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/cho_ueh?retryWrites=true&w=majority
+JWT_SECRET=your-very-long-super-secret-key-here-at-least-32-chars
+JWT_EXPIRE=30d
+NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
 
-| Role | Email | Mật khẩu |
-|---|---|---|
-| Admin | an.nguyen@st.ueh.edu.vn | 123456 |
-| User | bao.tran@st.ueh.edu.vn | 123456 |
-| User | chau.le@st.ueh.edu.vn | 123456 |
-| User | duy.pham@st.ueh.edu.vn | 123456 |
-| User | ha.vo@st.ueh.edu.vn | 123456 |
+### 3. Run
+```bash
+npm start
+# Hoặc seed data mẫu trước:
+npm run seed
+```
+🌐 **http://localhost:3000**
 
----
+**Admin test**: `an.nguyen@st.ueh.edu.vn` / `123456`
+
+## 🗄️ Database Schemas
+
+### 👤 User
+```js
+{
+  name, email (@student.ueh.edu.vn), studentId (31xxxxxxx),
+  phone, department, year,
+  password (hashed), avatar, bio,
+  rating (0-5), totalReviews, role: ['user'|'admin']
+}
+```
+
+### 📦 Product (200+ fields UEH-specific)
+```js
+{
+  title, listingType: ['sell'|'wanted'], price/budget,
+  category: ['sach','dien-tu',...], condition: ['new'|'used'],
+  description, images: [], seller (ref User),
+  faculty, courseCode, meetingPoints, preferredTimeSlots,
+  status: ['available'|'sold'|'reserved'], views
+}
+```
+**Indexes**: Full-text search (title/desc/course), category/price/createdAt.
+
+### 💬 Message
+Conversations tied to user/product.
 
 ## 🔌 API Endpoints
 
-### Auth
-| Method | Endpoint | Mô tả |
-|---|---|---|
-| POST | `/api/auth/register` | Đăng ký tài khoản |
-| POST | `/api/auth/login` | Đăng nhập |
-| GET | `/api/auth/me` | Thông tin user hiện tại |
-| POST | `/api/auth/logout` | Đăng xuất |
+### 👤 Auth (JWT required after login)
+| Method | Endpoint | Auth | Desc |
+|--------|----------|------|------|
+| POST | `/api/auth/register` | - | Đăng ký (UEH email/MSSV) |
+| POST | `/api/auth/login` | - | Đăng nhập |
+| GET | `/api/auth/me` | ✅ | Profile hiện tại |
+| POST | `/api/auth/logout` | ✅ | Logout |
 
-### Products
-| Method | Endpoint | Mô tả | Auth |
-|---|---|---|:---:|
-| GET | `/api/products` | Danh sách, tìm kiếm, lọc | ❌ |
-| GET | `/api/products/:id` | Chi tiết sản phẩm | ❌ |
-| POST | `/api/products` | Tạo bài đăng (upload ≤6 ảnh) | ✅ |
-| PUT | `/api/products/:id` | Cập nhật bài đăng | ✅ |
-| DELETE | `/api/products/:id` | Xóa bài đăng | ✅ |
-| GET | `/api/products/stats/me` | Thống kê bài đăng của tôi | ✅ |
+### 📦 Products
+| Method | Endpoint | Auth | Desc |
+|--------|----------|------|------|
+| GET | `/api/products` | - | List + search/filter |
+| GET | `/api/products/:id` | - | Detail |
+| POST | `/api/products` | ✅ | Create (upload 6 imgs) |
+| PUT | `/api/products/:id` | ✅ | Update |
+| DELETE | `/api/products/:id` | ✅ | Delete |
 
-### Users
-| Method | Endpoint | Mô tả | Auth |
-|---|---|---|:---:|
-| GET | `/api/users/:id` | Hồ sơ công khai | ❌ |
-| PUT | `/api/users/:id` | Cập nhật hồ sơ | ✅ |
-| GET | `/api/users/:id/green-score` | UEH Green Score | ✅ |
+### 💬 Messages
+| Method | Endpoint | Auth | Desc |
+|--------|----------|------|------|
+| POST | `/api/messages` | ✅ | Send msg |
+| GET | `/api/messages/conversations` | ✅ | List convos |
+| GET | `/api/messages/:userId/:productId` | ✅ | Messages |
+| GET | `/api/messages/unread-count` | ✅ | Count |
 
-### Messages
-| Method | Endpoint | Mô tả | Auth |
-|---|---|---|:---:|
-| POST | `/api/messages` | Gửi tin nhắn | ✅ |
-| GET | `/api/messages/conversations` | Danh sách hội thoại | ✅ |
-| GET | `/api/messages/:userId/:productId` | Tin nhắn theo sản phẩm | ✅ |
-| GET | `/api/messages/unread-count` | Số tin chưa đọc | ✅ |
+### 👑 Admin (role=admin)
+| GET | `/api/admin/stats` | Stats dashboard |
+|-----|---------------------|-----------------|
+| GET/PUT/DEL | `/api/admin/users/:id` | Manage users |
+| GET/PUT/DEL | `/api/admin/products/:id` | Manage products |
 
-### Admin *(yêu cầu role admin)*
-| Method | Endpoint | Mô tả |
-|---|---|---|
-| GET | `/api/admin/stats` | Thống kê tổng quan |
-| GET/PUT/DELETE | `/api/admin/users/:id` | Quản lý người dùng |
-| GET/PUT/DELETE | `/api/admin/products/:id` | Quản lý sản phẩm |
+## 🎨 Views & Frontend
+- **Tailwind CDN** w/ custom theme (primary: #00464d, accent: #EC6D33)
+- **Custom JS**: admin.js, products.js, post-ad.js, messages.js (dynamic UI)
+- **Responsive**: Mobile-first, dark mode support
+- **Partials**: navbar.ejs, footer.ejs
 
----
-
-## 🗃️ Database Schema
-
-### User
-```js
-{ name, email, studentId, phone, department, year,
-  password (bcrypt), avatar, bio, rating, totalReviews,
-  role: ['user', 'admin'] }
-```
-
-### Product
-```js
-{ title, listingType: ['sell', 'wanted'],
-  price, budgetMin, budgetMax, urgency,
-  category, condition, description, location,
-  // UEH-specific fields:
-  courseCode, courseName, faculty, academicYear,
-  semester, suitableForYear,
-  meetingPoints, preferredTimeSlots,
-  images[], seller, status, views }
-```
-
-### Message
-```js
-{ sender, receiver, product, content, read, createdAt }
-```
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Công nghệ |
-|---|---|
-| Runtime | Node.js 22 |
-| Framework | Express 4.18 |
-| Database | MongoDB Atlas + Mongoose 8 |
-| View Engine | EJS 3 |
-| Styling | Tailwind CSS (CDN) + Custom CSS |
-| Auth | JWT + httpOnly Cookie |
-| Upload | Multer |
-| Security | Helmet · CORS · express-rate-limit · bcryptjs |
-| Deploy | Render (free tier) |
-
----
-
-## 📝 Scripts
-
+## 🌱 Scripts hữu ích
 ```bash
-npm start              # Chạy server
-npm run seed           # Xóa data cũ và tạo data mẫu
-npm run patch-products # Cập nhật ngữ cảnh UEH cho sản phẩm
+npm start              # 🚀 Production server
+npm run seed           # 🌱 Create sample users/products
+npm run patch-products # 🛠️ Fix product data
 ```
 
----
+## ☁️ Deployment Guide
+### ✅ Khuyến nghị: Render/Railway (Free tier OK)
+```
+Build: npm install
+Start: npm start
+Env: MONGODB_URI*, JWT_SECRET*, NODE_ENV=production
+```
+**Static uploads**: public/uploads → Git ignore + external storage (Cloudinary).
 
-## ☁️ Deploy
+### ⚠️ Vercel: Serverless limitations
+- OK for API but file uploads need refactor.
 
-Dự án deploy trên **Render** (free tier) với database **MongoDB Atlas**. Dùng [UptimeRobot](https://uptimerobot.com) ping endpoint `/ping` mỗi 5 phút để tránh app bị sleep.
+## 🔒 Security & Best Practices
+✅ **Implemented**:
+- Helmet (CSP disabled for Tailwind)
+- CORS configurable
+- Rate limit API/auth
+- Input validation (Mongoose)
+- JWT (30d expiry)
+- bcrypt (salt 10)
 
----
+🔧 **Improvements**:
+```bash
+npm i express-validator helmet-csp
+# Add tests: supertest jest
+```
 
-## 👨‍💻 Nhóm phát triển
+## 🚧 Roadmap
+- [ ] Cloudinary image upload
+- [ ] Push notifications (Socket.io)
+- [ ] Payments (Momo/VNPay)
+- [ ] Advanced search (Elasticsearch)
+- [ ] Mobile app (React Native)
+- [ ] Tests (95% coverage)
 
-Đồ án môn học **Thương mại điện tử** — Trường Đại học Kinh tế TP.HCM (UEH)
-**Năm học:** 2024 – 2025
+## 🤝 Contributing
+1. Fork repo
+2. `git checkout -b feature/xyz`
+3. Commit: `git commit -m "feat: add xyz"`
+4. Push & PR
 
----
+**Code style**: Prettier + ESLint (setup soon).
 
 ## 📄 License
+MIT - Feel free to use/modify! 🎉
 
-[MIT](LICENSE) © 2024–2025 UEH Student Team
+---
+
+**👨‍💻 Author**: UEH Student Dev Team  
+**📧 Contact**: cho.ueh@example.com  
+**🌟 Star repo nếu hữu ích!** ⭐
