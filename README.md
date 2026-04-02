@@ -7,7 +7,8 @@
 
 **Nền tảng mua bán đồ cũ thông minh dành riêng cho sinh viên Đại học Kinh tế TP.HCM (UEH)** 📱✨
 
-![Hero Banner](https://via.placeholder.com/1200x400/00464d/ffffff?text=Ch%E1%BB%9D+UEH+-+Mua+b%C3%A1n+th%C3%B4ng+minh+cho+sinh+vi%C3%AAn) *(Replace with actual screenshot)*
+<img width="2467" height="1353" alt="image" src="https://github.com/user-attachments/assets/c30d8be2-ebc4-4213-82f2-cc6f6b64563a" />
+
 
 ## ✨ Tính năng chính
 | 📋 CRUD Sản phẩm | 💬 Hệ thống tin nhắn | 👑 Admin Dashboard | 🎯 UEH Exclusive |
