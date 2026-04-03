@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UEH_EMAIL_REGEX = /(@student\.ueh\.edu\.vn|@ueh\.edu\.vn)$/i;
-const UEH_STUDENT_ID_REGEX = /^31\d{8}$/;
+const UEH_STUDENT_ID_REGEX = /^31\d{9}$/;
 
 const userSchema = new mongoose.Schema({
   name: {
