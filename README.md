@@ -173,7 +173,11 @@ Env: MONGODB_URI*, JWT_SECRET*, NODE_ENV=production
 - bcrypt (salt 10)
 
 
-© 2024 Chợ UEH – Đồ án môn học TMDT, không phải sản phẩm chính thức của Trường Đại học Kinh tế TP.HCM.
+
+
+
+
+© 2026 Chợ UEH – Đồ án môn học TMDT, không phải sản phẩm chính thức của Trường Đại học Kinh tế TP.HCM.
 
 
 
