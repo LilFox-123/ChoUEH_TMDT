@@ -1,5 +1,7 @@
 <footer class="bg-[#1a2e35] text-white pt-12 pb-8 mt-16">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 max-w-7xl mx-auto text-sm">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6 max-w-7xl mx-auto text-sm">
+
+    <!-- Col 1: Logo + mô tả -->
     <div class="space-y-4">
       <a href="/" class="cho-ueh-logo logo-white">
         <div class="logo-emblem">
@@ -18,7 +20,36 @@
       </a>
       <p class="text-white/60 leading-relaxed">Nền tảng thương mại điện tử dành riêng cho sinh viên Đại học Kinh tế TP.
         Hồ Chí Minh.</p>
+      <!-- Mạng xã hội -->
+      <div class="flex items-center gap-3 pt-1">
+        <a href="https://www.facebook.com/ueh.edu.vn" target="_blank" rel="noopener"
+          class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#1877f2] flex items-center justify-center transition-colors"
+          title="Facebook UEH">
+          <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
+          </svg>
+        </a>
+        <a href="https://zalo.me/ueh.edu.vn" target="_blank" rel="noopener"
+          class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#0068ff] flex items-center justify-center transition-colors"
+          title="Zalo UEH">
+          <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.441 16.471c-.43.34-.96.529-1.51.529-.31 0-.62-.06-.91-.18l-1.97-.82c-.27.17-.56.31-.87.41l-.3.09c-1.04.3-2.13.24-3.13-.18-1-.42-1.82-1.17-2.33-2.13-.51-.96-.65-2.06-.4-3.11.25-1.05.87-1.97 1.75-2.6.88-.63 1.94-.93 3.01-.86 1.07.07 2.08.51 2.85 1.25.77.74 1.24 1.74 1.33 2.81l1.96.82c.55.23.97.69 1.14 1.26.17.57.07 1.18-.26 1.67l-.34.02z" />
+          </svg>
+        </a>
+        <a href="https://www.youtube.com/@uehuniversity" target="_blank" rel="noopener"
+          class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#ff0000] flex items-center justify-center transition-colors"
+          title="YouTube UEH">
+          <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+          </svg>
+        </a>
+      </div>
     </div>
+
+    <!-- Col 2: Liên kết nhanh -->
     <div class="space-y-3">
       <h5 class="font-bold text-white text-sm uppercase tracking-wider">Liên kết nhanh</h5>
       <nav class="flex flex-col gap-2">
@@ -29,6 +60,20 @@
           class="text-white/60 hover:text-[#EC6D33] transition-colors">UEH Student Portal ↗</a>
       </nav>
     </div>
+
+    <!-- Col 3: Hỗ trợ & pháp lý -->
+    <div class="space-y-3">
+      <h5 class="font-bold text-white text-sm uppercase tracking-wider">Hỗ trợ</h5>
+      <nav class="flex flex-col gap-2">
+        <a href="/terms" class="text-white/60 hover:text-[#EC6D33] transition-colors">Điều khoản sử dụng</a>
+        <a href="/privacy" class="text-white/60 hover:text-[#EC6D33] transition-colors">Chính sách bảo mật</a>
+        <a href="/products?category=sach" class="text-white/60 hover:text-[#EC6D33] transition-colors">Sách & Tài
+          liệu</a>
+        <a href="/products?category=dien-tu" class="text-white/60 hover:text-[#EC6D33] transition-colors">Điện tử</a>
+      </nav>
+    </div>
+
+    <!-- Col 4: Đăng ký nhận tin -->
     <div class="space-y-3">
       <h5 class="font-bold text-white text-sm uppercase tracking-wider">Đăng ký nhận tin</h5>
       <p class="text-white/60">Nhận thông tin về các mặt hàng hot nhất ngay hôm nay.</p>
@@ -36,12 +81,25 @@
         <input
           class="bg-white/10 border-none rounded-l-lg py-2.5 px-3 text-sm w-full focus:ring-1 focus:ring-[#00464d] outline-none placeholder:text-white/40 text-white"
           placeholder="Email sinh viên..." type="email" />
-        <button class="bg-[#EC6D33] text-white px-4 py-2.5 rounded-r-lg hover:brightness-110 transition-all"><span
-            class="material-symbols-outlined text-base">send</span></button>
+        <button class="bg-[#EC6D33] text-white px-4 py-2.5 rounded-r-lg hover:brightness-110 transition-all">
+          <span class="material-symbols-outlined text-base">send</span>
+        </button>
       </div>
     </div>
+
   </div>
-  <div class="mt-10 text-center text-white/40 border-t border-white/10 pt-6 text-xs px-6">
-    © 2024 Chợ UEH – Đại học Kinh tế TP. Hồ Chí Minh (UEH)
+
+  <!-- Bottom bar -->
+  <div class="mt-10 border-t border-white/10 pt-6 px-6 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+      <p class="text-white/40">© 2024 Chợ UEH – Đồ án môn học Thương mại Điện tử</p>
+      <div class="flex items-center gap-4">
+        <a href="/terms" class="text-white/40 hover:text-white/70 transition-colors">Điều khoản</a>
+        <span class="text-white/20">·</span>
+        <a href="/privacy" class="text-white/40 hover:text-white/70 transition-colors">Bảo mật</a>
+      </div>
+    </div>
+    <p class="text-white/20 text-xs text-center mt-2">Không phải sản phẩm chính thức của Trường Đại học Kinh tế TP. Hồ
+      Chí Minh (UEH). Logo và linh vật Zeen thuộc sở hữu của UEH University.</p>
   </div>
 </footer>
