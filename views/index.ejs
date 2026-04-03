@@ -138,8 +138,7 @@
               <div class="hidden md:flex justify-end relative h-full items-center">
                 <!-- Ảnh sinh viên với khung bo tròn + shadow -->
                 <div class="relative">
-                  <img alt="UEH Students" 
-                    class="object-cover w-[400px] h-[420px]"
+                  <img alt="UEH Students" class="object-cover w-[400px] h-[420px]"
                     style="object-position: center top; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);"
                     src="/images/sinhvienueh.png" />
                 </div>
@@ -705,9 +704,9 @@
             ]);
             const [sellData, wantedData, soldData] = await Promise.all([sellRes.json(), wantedRes.json(), soldRes.json()]);
             const el = (id) => document.getElementById(id);
-            if (sellData.success && el('stat-sidebar-products')) el('stat-sidebar-products').textContent = (sellData.total || 0) + ' tin';
-            if (wantedData.success && el('stat-sidebar-wanted')) el('stat-sidebar-wanted').textContent = (wantedData.total || 0) + ' tin';
-            if (soldData.success && el('stat-sidebar-sold')) el('stat-sidebar-sold').textContent = (soldData.total || 0) + ' tin';
+            if (sellData.success && el('stat-sidebar-products')) el('stat-sidebar-products').textContent = (sellData.pagination?.total || 0) + ' tin';
+            if (wantedData.success && el('stat-sidebar-wanted')) el('stat-sidebar-wanted').textContent = (wantedData.pagination?.total || 0) + ' tin';
+            if (soldData.success && el('stat-sidebar-sold')) el('stat-sidebar-sold').textContent = (soldData.pagination?.total || 0) + ' tin';
           } catch (e) { /* stats không hiển thị nếu lỗi */ }
         })();
       </script>
