@@ -90,16 +90,95 @@
   </div>
 
   <!-- Bottom bar -->
-  <div class="mt-10 border-t border-white/10 pt-6 px-6 max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
-      <p class="text-white/40">© 2024 Chợ UEH – Đồ án môn học Thương mại Điện tử</p>
-      <div class="flex items-center gap-4">
-        <a href="/terms" class="text-white/40 hover:text-white/70 transition-colors">Điều khoản</a>
-        <span class="text-white/20">·</span>
-        <a href="/privacy" class="text-white/40 hover:text-white/70 transition-colors">Bảo mật</a>
+  <div class="mt-10 border-t border-white/10 pt-6 px-6 max-w-7xl mx-auto text-center space-y-2">
+    <div class="flex items-center justify-center gap-4 text-xs">
+      <p class="text-white/40">© 2026 Chợ UEH – Đồ án môn học Thương mại Điện tử</p>
+      <span class="text-white/20">·</span>
+      <a href="/terms" class="text-white/40 hover:text-white/70 transition-colors">Điều khoản</a>
+      <span class="text-white/20">·</span>
+      <a href="/privacy" class="text-white/40 hover:text-white/70 transition-colors">Bảo mật</a>
+    </div>
+    <p class="text-white/20 text-xs">Không phải sản phẩm chính thức của Trường Đại học Kinh tế TP. Hồ Chí Minh (UEH).
+      Logo và linh vật Zeen thuộc sở hữu của UEH University.</p>
+  </div>
+
+  <!-- Floating Support Button -->
+  <div id="support-fab" style="position:fixed;bottom:24px;right:24px;z-index:999;">
+
+    <!-- Modal -->
+    <div id="support-modal"
+      style="display:none;position:absolute;bottom:60px;right:0;width:220px;background:#ffffff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow:hidden;transform:translateY(8px);opacity:0;transition:transform 0.2s ease,opacity 0.2s ease;">
+      <div style="background:#00464d;padding:12px 16px;">
+        <p style="color:white;font-size:13px;font-weight:700;margin:0;">Hỗ trợ sinh viên</p>
+        <p style="color:rgba(255,255,255,0.7);font-size:11px;margin:4px 0 0;">Chúng tôi luôn sẵn sàng giúp bạn!</p>
+      </div>
+      <div style="padding:8px;">
+        <a id="support-message-link" href="/messages"
+          style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#151d1e;font-size:13px;font-weight:600;transition:background 0.15s;"
+          onmouseover="this.style.background='#ecf5f6'" onmouseout="this.style.background='transparent'">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#00464d;">chat</span>
+          Nhắn tin Admin
+        </a>
+        <a href="mailto:support@choueh.edu.vn"
+          style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#151d1e;font-size:13px;font-weight:600;transition:background 0.15s;"
+          onmouseover="this.style.background='#ecf5f6'" onmouseout="this.style.background='transparent'">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#EC6D33;">mail</span>
+          Gửi email hỗ trợ
+        </a>
       </div>
     </div>
-    <p class="text-white/20 text-xs text-center mt-2">Không phải sản phẩm chính thức của Trường Đại học Kinh tế TP. Hồ
-      Chí Minh (UEH). Logo và linh vật Zeen thuộc sở hữu của UEH University.</p>
+
+    <!-- FAB Button -->
+    <button id="support-btn" onclick="toggleSupportModal()"
+      style="width:52px;height:52px;border-radius:50%;background:#00464d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,70,77,0.4);transition:transform 0.2s,box-shadow 0.2s;"
+      onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 6px 20px rgba(0,70,77,0.5)'"
+      onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(0,70,77,0.4)'">
+      <span id="support-icon" class="material-symbols-outlined" style="color:white;font-size:22px;">headset_mic</span>
+    </button>
+
+    <!-- Badge số tin nhắn chưa đọc -->
+    <span id="support-badge"
+      style="display:none;position:absolute;top:-2px;right:-2px;background:#EC6D33;color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;">!</span>
   </div>
+
+  <script>
+    (function () {
+      var modal = document.getElementById('support-modal');
+      var icon = document.getElementById('support-icon');
+      var isOpen = false;
+
+      window.toggleSupportModal = function () {
+        isOpen = !isOpen;
+        if (isOpen) {
+          modal.style.display = 'block';
+          setTimeout(function () {
+            modal.style.transform = 'translateY(0)';
+            modal.style.opacity = '1';
+          }, 10);
+          icon.textContent = 'close';
+        } else {
+          modal.style.transform = 'translateY(8px)';
+          modal.style.opacity = '0';
+          icon.textContent = 'headset_mic';
+          setTimeout(function () { modal.style.display = 'none'; }, 200);
+        }
+      };
+
+      // Click outside to close
+      document.addEventListener('click', function (e) {
+        var fab = document.getElementById('support-fab');
+        if (isOpen && fab && !fab.contains(e.target)) {
+          window.toggleSupportModal();
+        }
+      });
+
+      // Tự động điền link nhắn tin admin nếu đã đăng nhập
+      fetch('/api/users/admin-id').then(function (r) { return r.json(); }).then(function (d) {
+        if (d && d.adminId) {
+          var link = document.getElementById('support-message-link');
+          if (link) link.href = '/messages?userId=' + d.adminId;
+        }
+      }).catch(function () { });
+    })();
+  </script>
 </footer>
