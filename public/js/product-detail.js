@@ -85,13 +85,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (quickBlock) {
       quickBlock.classList.remove('hidden');
       const views = document.getElementById('info-views');
-      const time  = document.getElementById('info-time');
-      const cat   = document.getElementById('info-category');
-      const loc   = document.getElementById('info-location');
+      const time = document.getElementById('info-time');
+      const cat = document.getElementById('info-category');
+      const loc = document.getElementById('info-location');
       if (views) views.textContent = (product.views || 0) + ' lượt';
-      if (time)  time.textContent  = product.timeAgo || 'Vừa đăng';
-      if (cat)   cat.textContent   = categoryLabels[product.category] || product.category || '–';
-      if (loc)   loc.textContent   = product.location || '–';
+      if (time) time.textContent = product.timeAgo || 'Vừa đăng';
+      if (cat) cat.textContent = categoryLabels[product.category] || product.category || '–';
+      if (loc) loc.textContent = product.location || '–';
     }
 
     // Share block
@@ -248,3 +248,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Failed to load product:', error);
   }
 });
+
+(function initLightbox() {
+  let _imgs = [];
+  let _cur = 0;
+
+  window.openLightbox = function (index) {
+    const product = window._currentProduct;
+    if (!product || !product.images || !product.images.length) return;
+    _imgs = product.images;
+    _cur = index;
+    show();
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function show() {
+    const img = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    img.src = _imgs[_cur];
+    if (counter) counter.textContent = `${_cur + 1} / ${_imgs.length}`;
+    document.getElementById('lightbox-prev').style.display = _imgs.length <= 1 ? 'none' : 'flex';
+    document.getElementById('lightbox-next').style.display = _imgs.length <= 1 ? 'none' : 'flex';
+  }
+
+  function close() {
+    document.getElementById('lightbox').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lightbox-close')?.addEventListener('click', close);
+  document.getElementById('lightbox-prev')?.addEventListener('click', () => { _cur = (_cur - 1 + _imgs.length) % _imgs.length; show(); });
+  document.getElementById('lightbox-next')?.addEventListener('click', () => { _cur = (_cur + 1) % _imgs.length; show(); });
+  document.getElementById('lightbox')?.addEventListener('click', (e) => { if (e.target === document.getElementById('lightbox')) close(); });
+  document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || lb.classList.contains('hidden')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') { _cur = (_cur - 1 + _imgs.length) % _imgs.length; show(); }
+    if (e.key === 'ArrowRight') { _cur = (_cur + 1) % _imgs.length; show(); }
+  });
+})();
