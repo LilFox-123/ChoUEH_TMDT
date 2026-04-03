@@ -7,7 +7,8 @@
 
 **Nền tảng mua bán đồ cũ thông minh dành riêng cho sinh viên Đại học Kinh tế TP.HCM (UEH)** 📱✨
 
-<img width="2467" height="1353" alt="image" src="https://github.com/user-attachments/assets/c30d8be2-ebc4-4213-82f2-cc6f6b64563a" />
+<img width="2501" height="1275" alt="image" src="https://github.com/user-attachments/assets/ca62013d-2fb8-4351-84e0-b4f2cc711f6c" />
+
 
 
 ## ✨ Tính năng chính
