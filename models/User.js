@@ -1,188 +1,96 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UEH_EMAIL_REGEX = /(@student\.ueh\.edu\.vn|@ueh\.edu\.vn)$/i;
 const UEH_STUDENT_ID_REGEX = /^31\d{9}$/;
 
-// Generate JWT token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '30d'
-  });
-};
-
-const getCookieOptions = () => ({
-  httpOnly: true,
-  sameSite: 'strict',
-  secure: process.env.NODE_ENV === 'production',
-  path: '/'
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Vui lòng nhập họ tên'],
+    trim: true,
+    maxlength: [100, 'Tên không quá 100 ký tự']
+  },
+  email: {
+    type: String,
+    required: [true, 'Vui lòng nhập email'],
+    unique: true,
+    lowercase: true,
+    trim: true,
+    match: [/^\S+@\S+\.\S+$/, 'Email không hợp lệ'],
+    validate: {
+      validator: (value) => UEH_EMAIL_REGEX.test(value),
+      message: 'Email phải là email UEH (@student.ueh.edu.vn)'
+    }
+  },
+  studentId: {
+    type: String,
+    required: [true, 'Vui lòng nhập MSSV'],
+    unique: true,
+    trim: true,
+    validate: {
+      validator: (value) => UEH_STUDENT_ID_REGEX.test(value),
+      message: 'MSSV không hợp lệ'
+    }
+  },
+  phone: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  department: {
+    type: String,
+    default: 'Khoa Kinh tế'
+  },
+  year: {
+    type: String,
+    default: 'Khóa 49'
+  },
+  password: {
+    type: String,
+    required: [true, 'Vui lòng nhập mật khẩu'],
+    minlength: [6, 'Mật khẩu ít nhất 6 ký tự'],
+    select: false
+  },
+  avatar: {
+    type: String,
+    default: ''
+  },
+  bio: {
+    type: String,
+    default: '',
+    maxlength: [500, 'Giới thiệu không quá 500 ký tự']
+  },
+  rating: {
+    type: Number,
+    default: 5.0,
+    min: 0,
+    max: 5
+  },
+  totalReviews: {
+    type: Number,
+    default: 0
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  }
+}, {
+  timestamps: true
 });
 
-const sendAuthResponse = (res, statusCode, token, user, message) => {
-  res
-    .cookie('token', token, getCookieOptions())
-    .status(statusCode)
-    .json({
-      success: true,
-      message,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        studentId: user.studentId,
-        department: user.department,
-        avatar: user.avatar,
-        role: user.role
-      }
-    });
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Compare password
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// @desc    Register user
-// @route   POST /api/auth/register
-// @access  Public
-exports.register = async (req, res) => {
-  try {
-    const { name, email, studentId, phone, department, year, password } = req.body;
-    const normalizedEmail = email?.trim().toLowerCase();
-    const normalizedStudentId = studentId?.trim();
-
-    if (!name || !email || !studentId || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Vui lòng điền đầy đủ thông tin bắt buộc'
-      });
-    }
-
-    if (!UEH_EMAIL_REGEX.test(normalizedEmail)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email phải là email UEH (@student.ueh.edu.vn)'
-      });
-    }
-
-    if (!UEH_STUDENT_ID_REGEX.test(normalizedStudentId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'MSSV không hợp lệ'
-      });
-    }
-
-    const existingUser = await User.findOne({
-      $or: [{ email: normalizedEmail }, { studentId: normalizedStudentId }]
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email hoặc MSSV đã được sử dụng'
-      });
-    }
-
-    const user = await User.create({
-      name,
-      email: normalizedEmail,
-      studentId: normalizedStudentId,
-      phone,
-      department: department || 'Khoa Kinh tế',
-      year: year || 'Khóa 49',
-      password
-    });
-
-    const token = generateToken(user._id);
-    sendAuthResponse(res, 201, token, user, 'Đăng ký thành công!');
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email hoặc MSSV đã tồn tại trong hệ thống'
-      });
-    }
-
-    if (error.name === 'ValidationError') {
-      const firstError = Object.values(error.errors)[0];
-      return res.status(400).json({
-        success: false,
-        message: firstError?.message || 'Dữ liệu không hợp lệ'
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Lỗi máy chủ'
-    });
-  }
-};
-
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const credential = email?.trim().toLowerCase();
-
-    if (!credential || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Vui lòng nhập email/MSSV và mật khẩu'
-      });
-    }
-
-    const user = await User.findOne({
-      $or: [{ email: credential }, { studentId: credential }]
-    }).select('+password');
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Email/MSSV hoặc mật khẩu không đúng'
-      });
-    }
-
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Email/MSSV hoặc mật khẩu không đúng'
-      });
-    }
-
-    const token = generateToken(user._id);
-    sendAuthResponse(res, 200, token, user, 'Đăng nhập thành công!');
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Lỗi máy chủ'
-    });
-  }
-};
-
-// @desc    Get current logged in user
-// @route   GET /api/auth/me
-// @access  Private
-exports.getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    res.json({
-      success: true,
-      user
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
-// @desc    Logout user (clear cookie)
-// @route   POST /api/auth/logout
-// @access  Public
-exports.logout = async (req, res) => {
-  res
-    .clearCookie('token', getCookieOptions())
-    .json({
-      success: true,
-      message: 'Đăng xuất thành công'
-    });
-};
+module.exports = mongoose.model('User', userSchema);
