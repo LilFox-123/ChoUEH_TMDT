@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const product = data.data;
+    window._currentProduct = product;
     const isWanted = product.listingType === 'wanted';
 
     document.getElementById('breadcrumb-title').textContent = product.title;
@@ -33,6 +34,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mainImage = document.getElementById('main-image');
     if (product.images && product.images.length > 0) {
       mainImage.src = product.images[0];
+      mainImage.style.cursor = 'zoom-in';
+      mainImage.addEventListener('click', () => openLightbox(0));
     } else {
       mainImage.src = 'https://placehold.co/800x600/e1eaeb/6f797a?text=No+Image';
     }
@@ -40,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const thumbnails = document.getElementById('thumbnails');
     if (product.images && product.images.length > 1) {
       thumbnails.innerHTML = product.images.map((image, index) => `
-        <div class="aspect-square rounded-lg overflow-hidden cursor-pointer ${index === 0 ? 'ring-2 ring-[#00464d]' : 'hover:opacity-80'} transition-opacity" onclick="document.getElementById('main-image').src='${image}'; document.querySelectorAll('#thumbnails > div').forEach((thumbnail) => thumbnail.classList.remove('ring-2', 'ring-[#00464d]')); this.classList.add('ring-2', 'ring-[#00464d]')">
+        <div class="aspect-square rounded-lg overflow-hidden cursor-pointer ${index === 0 ? 'ring-2 ring-[#00464d]' : 'hover:opacity-80'} transition-opacity" onclick="document.getElementById('main-image').src='${image}'; document.querySelectorAll('#thumbnails > div').forEach((thumbnail) => thumbnail.classList.remove('ring-2', 'ring-[#00464d]')); this.classList.add('ring-2', 'ring-[#00464d]'); openLightbox(${index})">
           <img class="w-full h-full object-cover" src="${image}" alt=""/>
         </div>
       `).join('');
@@ -248,6 +251,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Failed to load product:', error);
   }
 });
+
+(function initLightbox() {
+  let _imgs = [];
+  let _cur  = 0;
+
+  window.openLightbox = function(index) {
+    const product = window._currentProduct;
+    if (!product || !product.images || !product.images.length) return;
+    _imgs = product.images;
+    _cur  = index;
+    show();
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function show() {
+    const img = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    img.src = _imgs[_cur];
+    if (counter) counter.textContent = `${_cur + 1} / ${_imgs.length}`;
+    document.getElementById('lightbox-prev').style.display = _imgs.length <= 1 ? 'none' : 'flex';
+    document.getElementById('lightbox-next').style.display = _imgs.length <= 1 ? 'none' : 'flex';
+  }
+
+  function close() {
+    document.getElementById('lightbox').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lightbox-close')?.addEventListener('click', close);
+  document.getElementById('lightbox-prev')?.addEventListener('click', () => { _cur = (_cur - 1 + _imgs.length) % _imgs.length; show(); });
+  document.getElementById('lightbox-next')?.addEventListener('click', () => { _cur = (_cur + 1) % _imgs.length; show(); });
+  document.getElementById('lightbox')?.addEventListener('click', (e) => { if (e.target === document.getElementById('lightbox')) close(); });
+  document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || lb.classList.contains('hidden')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') { _cur = (_cur - 1 + _imgs.length) % _imgs.length; show(); }
+    if (e.key === 'ArrowRight') { _cur = (_cur + 1) % _imgs.length; show(); }
+  });
+})();
 
 (function initLightbox() {
   let _imgs = [];

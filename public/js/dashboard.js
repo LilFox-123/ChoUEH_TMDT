@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Toggle product status
-  window.toggleStatus = async function(productId, currentStatus, listingType = 'sell') {
+  window.toggleStatus = async function (productId, currentStatus, listingType = 'sell') {
     const newStatus = currentStatus === 'available' ? 'sold' : 'available';
     try {
       const res = await fetch(`/api/products/${productId}`, {
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   // Delete product
-  window.deleteProduct = async function(productId) {
+  window.deleteProduct = async function (productId) {
     if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này?')) return;
 
     try {

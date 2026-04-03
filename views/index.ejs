@@ -15,6 +15,30 @@
   <script>
     tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#00464d", "primary-container": "#005f69", "primary-fixed": "#a7eefa", "primary-fixed-dim": "#8bd2dd", "on-primary": "#ffffff", "on-primary-container": "#8fd6e2", "secondary": "#35618c", "secondary-container": "#a2cdfe", "secondary-fixed": "#d0e4ff", "on-secondary-fixed": "#001d35", "tertiary": "#712600", "tertiary-container": "#973600", "tertiary-fixed": "#ffdbce", "tertiary-fixed-dim": "#ffb598", "on-tertiary": "#ffffff", "on-tertiary-container": "#ffbca1", "surface": "#f2fbfc", "surface-dim": "#d3dcdd", "surface-container-lowest": "#ffffff", "surface-container-low": "#ecf5f6", "surface-container": "#e7f0f0", "surface-container-high": "#e1eaeb", "surface-container-highest": "#dbe4e5", "surface-variant": "#dbe4e5", "on-surface": "#151d1e", "on-surface-variant": "#3f484a", "outline": "#6f797a", "outline-variant": "#bec8ca", "background": "#f2fbfc", "on-background": "#151d1e", "inverse-surface": "#293233", "inverse-primary": "#8bd2dd" }, fontFamily: { "headline": ["Plus Jakarta Sans", "sans-serif"], "body": ["Inter", "sans-serif"], "display": ["Playfair Display", "Georgia", "serif"] } } } }
   </script>
+  <style>
+@keyframes zeenFloat {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+@keyframes zeenWave {
+  0%, 100% { transform: rotate(0deg); transform-origin: 70% 70%; }
+  10%, 30% { transform: rotate(-10deg); transform-origin: 70% 70%; }
+  20%, 40% { transform: rotate(10deg); transform-origin: 70% 70%; }
+  50% { transform: rotate(0deg); transform-origin: 70% 70%; }
+}
+@keyframes zeenGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,70,77,0); }
+  50% { box-shadow: 0 0 20px 4px rgba(0,70,77,0.12); }
+}
+@keyframes bubblePop {
+  0% { opacity: 0; transform: scale(0.8) translateY(4px); }
+  60% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+  </style>
 </head>
 
 <body class="bg-background text-on-surface">
@@ -174,18 +198,48 @@
           <aside class="w-full lg:w-64 space-y-6">
 
             <!-- Widget: Mascot Zeen -->
-            <div
-              class="bg-gradient-to-b from-[#e8f5e9] to-[#ecf5f6] rounded-2xl p-5 text-center relative overflow-hidden border border-[#c8e6c9]">
-              <div class="absolute top-2 right-2 w-16 h-16 rounded-full bg-[#00464d]/5"></div>
-              <div class="absolute bottom-0 left-0 w-12 h-12 rounded-full bg-[#EC6D33]/5"></div>
-              <img src="/images/zeen-mascot.png" alt="Zeen - Linh vật Chợ UEH" class="w-28 h-28 object-contain mx-auto"
-                style="mix-blend-mode:multiply;" onerror="this.style.display='none'" />
-              <p class="text-sm font-bold text-[#00464d] mt-1">Xin chào! Tôi là Zeen 👋</p>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Chợ UEH – nơi sinh viên<br />mua bán an
-                toàn trong trường.</p>
+            <div class="rounded-2xl p-5 text-center relative overflow-hidden border border-[#c8e6c9]"
+                 style="background:linear-gradient(160deg,#e8f5e9 0%,#f0fbf4 60%,#ecf5f6 100%); animation: zeenGlow 3s ease-in-out infinite;">
+
+              <!-- Decorative background bubbles -->
+              <div class="absolute top-2 right-3 w-8 h-8 rounded-full opacity-20" style="background:#00464d;"></div>
+              <div class="absolute bottom-3 left-2 w-5 h-5 rounded-full opacity-15" style="background:#EC6D33;"></div>
+              <div class="absolute top-1/2 left-1 w-3 h-3 rounded-full opacity-10" style="background:#00464d;"></div>
+
+              <!-- Speech bubble -->
+              <div class="relative mx-auto mb-2 w-fit" style="animation: bubblePop 0.6s ease-out 0.3s both;">
+                <div class="bg-white rounded-xl px-3 py-1.5 shadow-sm border border-[#c8e6c9] text-xs font-semibold text-[#00464d] whitespace-nowrap">
+                  Mua bán thông minh! 🎓
+                </div>
+                <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0" style="border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid white;filter:drop-shadow(0 1px 0 #c8e6c9);"></div>
+              </div>
+
+              <!-- Mascot image with float animation -->
+              <div class="relative w-28 h-28 mx-auto" style="animation: zeenFloat 3.5s ease-in-out infinite;">
+                <img src="/images/zeen-mascot.png" alt="Zeen - Linh vật Chợ UEH"
+                     class="w-28 h-28 object-contain"
+                     style="mix-blend-mode:multiply; filter: drop-shadow(0 4px 8px rgba(0,70,77,0.2));"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                <!-- Fallback emoji mascot khi không có ảnh -->
+                <div class="w-28 h-28 rounded-full bg-[#e8f5e9] border-2 border-[#c8e6c9] items-center justify-center text-5xl hidden" style="display:none;">🐦</div>
+              </div>
+
+              <!-- Name + status dot -->
+              <div class="flex items-center justify-center gap-2 mt-2">
+                <span class="w-2 h-2 rounded-full bg-green-500" style="animation: dotBlink 2s ease-in-out infinite;"></span>
+                <p class="text-sm font-bold text-[#00464d]">Xin chào! Tôi là Zeen 👋</p>
+              </div>
+
+              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Chợ UEH – nơi sinh viên<br/>mua bán an toàn trong trường.</p>
+
+              <!-- CTA button với hover effect -->
               <a href="/register"
-                class="mt-3 inline-block bg-[#00464d] text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-[#005f69] transition-colors">Đăng
-                ký miễn phí →</a>
+                 class="mt-3 inline-block bg-[#00464d] text-white text-xs font-semibold px-4 py-2 rounded-full transition-all duration-300"
+                 style="box-shadow:0 2px 8px rgba(0,70,77,0.3);"
+                 onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0,70,77,0.45)';"
+                 onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,70,77,0.3)';">
+                Đăng ký miễn phí →
+              </a>
             </div>
 
             <!-- Widget: Thống kê nhanh -->
