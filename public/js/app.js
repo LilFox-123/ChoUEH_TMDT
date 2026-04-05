@@ -252,37 +252,70 @@ window.AppUtils = {
     const image = product.images && product.images.length > 0
       ? this.esc(product.images[0])
       : 'https://placehold.co/400x400/e1eaeb/6f797a?text=No+Image';
-    const statusColors = {
-      available: 'bg-green-100 text-green-700',
-      sold: 'bg-red-100 text-red-700',
-      reserved: 'bg-yellow-100 text-yellow-700'
-    };
     const isWanted = product.listingType === 'wanted';
     const amountDisplay = isWanted
       ? this.formatBudgetRange(product.budgetMin, product.budgetMax)
       : this.formatPrice(product.price);
-    const toggleLabel = isWanted
-      ? (product.status === 'available' ? 'Đánh dấu đã tìm được' : 'Mở lại nhu cầu')
-      : (product.status === 'available' ? 'Đánh dấu đã bán' : 'Hiển thị lại');
     const typeBadgeClass = isWanted
       ? 'bg-[#fff2cc] text-[#9a6b00]'
       : 'bg-[#d0e4ff] text-[#295781]';
+    
+    // Transaction status for sell listings
+    const txStatus = product.transactionStatus || 'available';
+    const txBadgeConfig = {
+      available: 'bg-green-100 text-green-700',
+      negotiating: 'bg-amber-100 text-amber-700',
+      deposited: 'bg-orange-100 text-orange-700',
+      sold: 'bg-gray-100 text-gray-500'
+    };
+    const txLabels = {
+      available: 'Đang bán',
+      negotiating: 'Thương lượng',
+      deposited: 'Đã đặt cọc',
+      sold: 'Đã bán'
+    };
+    
+    // For wanted listings, use old status system
+    const wantedStatusColors = {
+      available: 'bg-green-100 text-green-700',
+      sold: 'bg-gray-100 text-gray-500'
+    };
+    const wantedLabels = {
+      available: 'Đang cần',
+      sold: 'Đã tìm được'
+    };
+    
+    const badgeClass = isWanted ? (wantedStatusColors[product.status] || '') : (txBadgeConfig[txStatus] || '');
+    const badgeLabel = isWanted ? (wantedLabels[product.status] || product.status) : (txLabels[txStatus] || txStatus);
+    
+    // Status control: dropdown for sell, toggle for wanted
+    let statusControl;
+    if (isWanted) {
+      const toggleLabel = product.status === 'available' ? 'Đánh dấu đã tìm được' : 'Mở lại nhu cầu';
+      statusControl = `<button onclick="toggleStatus('${product._id}','${product.status}','wanted')" class="flex-1 text-xs py-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold hover:bg-[#dbe4e5] transition-colors">${toggleLabel}</button>`;
+    } else {
+      statusControl = `
+        <select onchange="updateTxStatus('${product._id}', this.value, this)" class="flex-1 text-xs py-2 px-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold border-none focus:ring-2 focus:ring-primary cursor-pointer">
+          <option value="available" ${txStatus === 'available' ? 'selected' : ''}>Đang bán</option>
+          <option value="negotiating" ${txStatus === 'negotiating' ? 'selected' : ''}>Thương lượng</option>
+          <option value="deposited" ${txStatus === 'deposited' ? 'selected' : ''}>Đã đặt cọc</option>
+          <option value="sold" ${txStatus === 'sold' ? 'selected' : ''}>Đã bán</option>
+        </select>`;
+    }
 
     return `
-      <div class="bg-white rounded-xl overflow-hidden shadow-sm ghost-border">
+      <div class="bg-white rounded-xl overflow-hidden shadow-sm ghost-border" data-product-id="${product._id}">
         <div class="h-40 overflow-hidden"><img class="w-full h-full object-cover" src="${image}" alt="${this.esc(product.title)}"/></div>
         <div class="p-4 space-y-2">
           <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold px-2 py-1 rounded ${statusColors[product.status] || ''}">${this.statusLabel(product)}</span>
+            <span class="tx-badge text-xs font-bold px-2 py-1 rounded ${badgeClass}">${badgeLabel}</span>
             <span class="text-xs px-2 py-1 rounded ${typeBadgeClass} font-bold">${this.listingTypeLabel(product.listingType)}</span>
           </div>
           <h3 class="font-bold text-sm line-clamp-2">${this.esc(product.title)}</h3>
           <div class="text-primary font-black">${amountDisplay}</div>
           <div class="text-xs text-[#6f797a]">${this.timeAgo(product.createdAt)}</div>
           <div class="flex gap-2 pt-2">
-            <button onclick="toggleStatus('${product._id}','${product.status}','${product.listingType || 'sell'}')" class="flex-1 text-xs py-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold hover:bg-[#dbe4e5] transition-colors">
-              ${toggleLabel}
-            </button>
+            ${statusControl}
             <button onclick="deleteProduct('${product._id}')" class="text-xs py-2 px-3 bg-red-50 text-red-600 rounded-lg font-semibold hover:bg-red-100 transition-colors">
               <span class="material-symbols-outlined text-sm">delete</span>
             </button>

@@ -597,12 +597,10 @@ exports.updateTransactionStatus = async (req, res) => {
     }
 
     await product.save();
-    await product.populate('seller', 'name avatar studentId');
 
     res.json({
       success: true,
-      message: 'Cập nhật trạng thái thành công',
-      data: product
+      transactionStatus: product.transactionStatus
     });
   } catch (error) {
     handleProductError(res, error);

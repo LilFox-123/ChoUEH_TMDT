@@ -103,6 +103,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  // Update transaction status (for sell listings)
+  window.updateTxStatus = async function (productId, newStatus, selectEl) {
+    const txLabels = {
+      available: 'Đang bán',
+      negotiating: 'Thương lượng',
+      deposited: 'Đã đặt cọc',
+      sold: 'Đã bán'
+    };
+    const txBadgeConfig = {
+      available: 'bg-green-100 text-green-700',
+      negotiating: 'bg-amber-100 text-amber-700',
+      deposited: 'bg-orange-100 text-orange-700',
+      sold: 'bg-gray-100 text-gray-500'
+    };
+
+    try {
+      const res = await fetch(`/api/products/${productId}/transaction-status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionStatus: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.AppUtils.showToast('✅ Đã cập nhật trạng thái', 'success');
+        // Update badge in-place
+        const card = selectEl.closest('[data-product-id]');
+        if (card) {
+          const badge = card.querySelector('.tx-badge');
+          if (badge) {
+            badge.className = `tx-badge text-xs font-bold px-2 py-1 rounded ${txBadgeConfig[newStatus] || ''}`;
+            badge.textContent = txLabels[newStatus] || newStatus;
+          }
+        }
+        // Refresh stats
+        await refreshDashboardInsights();
+      } else {
+        window.AppUtils.showToast(data.message || 'Cập nhật thất bại', 'error');
+      }
+    } catch (err) {
+      window.AppUtils.showToast('Lỗi kết nối', 'error');
+    }
+  };
+
   // Delete product
   window.deleteProduct = async function (productId) {
     if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này?')) return;

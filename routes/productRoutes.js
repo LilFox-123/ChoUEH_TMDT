@@ -14,7 +14,7 @@ router.get('/', getProducts);
 router.get('/:id', getProduct);
 router.post('/', protect, upload.array('images', 6), createProduct);
 router.put('/:id', protect, upload.array('images', 6), updateProduct);
-router.post('/:id/transaction-status', protect, updateTransactionStatus);
+router.patch('/:id/transaction-status', protect, updateTransactionStatus);
 router.delete('/:id', protect, deleteProduct);
 
 module.exports = router;

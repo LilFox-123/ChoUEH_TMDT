@@ -103,6 +103,91 @@ document.addEventListener('DOMContentLoaded', async () => {
         banner.innerHTML = `<span class="text-xl">${bc.icon}</span><p class="text-sm font-medium ${bc.textColor}">${bc.text}</p>`;
         productPrice.parentElement.insertBefore(banner, productPrice.nextSibling);
       }
+
+      // Seller transaction status controls (below badge row, owner only)
+      const currentUser = window.AppUtils.getUser();
+      if (currentUser && product.sellerId === currentUser._id) {
+        const existingControls = document.getElementById('seller-tx-controls');
+        if (existingControls) existingControls.remove();
+
+        const badgeRow = listingTypeBadge.parentElement;
+        const controlBlock = document.createElement('div');
+        controlBlock.id = 'seller-tx-controls';
+        controlBlock.className = 'mt-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant/20';
+        
+        const btnClass = (status) => {
+          const base = 'flex-1 min-w-0 flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all';
+          if (status === txStatus) {
+            const activeStyles = {
+              available: 'bg-green-600 text-white',
+              negotiating: 'bg-amber-500 text-white',
+              deposited: 'bg-orange-500 text-white',
+              sold: 'bg-gray-500 text-white'
+            };
+            return `${base} ${activeStyles[status]}`;
+          }
+          const inactiveStyles = {
+            available: 'border border-green-600 text-green-700 hover:bg-green-50',
+            negotiating: 'border border-amber-500 text-amber-700 hover:bg-amber-50',
+            deposited: 'border border-orange-500 text-orange-700 hover:bg-orange-50',
+            sold: 'border border-gray-400 text-gray-600 hover:bg-gray-50'
+          };
+          return `${base} ${inactiveStyles[status]}`;
+        };
+
+        controlBlock.innerHTML = `
+          <p class="text-xs font-semibold text-on-surface-variant mb-3 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">tune</span>Cập nhật trạng thái
+          </p>
+          <div class="flex flex-wrap sm:flex-nowrap gap-2">
+            <button type="button" data-status="available" class="${btnClass('available')}">Đang bán</button>
+            <button type="button" data-status="negotiating" class="${btnClass('negotiating')}">Thương lượng</button>
+            <button type="button" data-status="deposited" class="${btnClass('deposited')}">Đã đặt cọc</button>
+            <button type="button" data-status="sold" class="${btnClass('sold')}">Đã bán</button>
+          </div>
+        `;
+        badgeRow.after(controlBlock);
+
+        // Attach handlers with in-place update
+        controlBlock.querySelectorAll('button[data-status]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const newStatus = btn.dataset.status;
+            if (newStatus === txStatus) return;
+
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span>';
+
+            try {
+              const res = await fetch(`/api/products/${product._id}/transaction-status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ transactionStatus: newStatus })
+              });
+              const data = await res.json();
+
+              if (data.success) {
+                window.AppUtils.showToast('✅ Đã cập nhật trạng thái', 'success');
+                // Update badge in-place
+                const newTxS = txConfig[newStatus] || txConfig.available;
+                const newDotHtml = newTxS.dot ? '<span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse mr-1"></span>' : '';
+                listingTypeBadge.innerHTML = `${newDotHtml}<span class="material-symbols-outlined text-sm mr-1">${newTxS.icon}</span>${newTxS.label}`;
+                listingTypeBadge.className = `flex items-center px-3 py-1 rounded-full text-xs font-semibold ${newTxS.bg} ${newTxS.text}`;
+                // Reload to refresh controls
+                setTimeout(() => window.location.reload(), 800);
+              } else {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                window.AppUtils.showToast(data.message || 'Cập nhật thất bại', 'error');
+              }
+            } catch (err) {
+              btn.disabled = false;
+              btn.innerHTML = originalHtml;
+              window.AppUtils.showToast('Lỗi kết nối', 'error');
+            }
+          });
+        });
+      }
     }
 
     document.getElementById('product-title').textContent = product.title;
@@ -245,69 +330,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
       `;
-      
-      // Seller transaction status controls (only for product owner)
-      const currentUser = window.AppUtils.getUser();
-      if (!isWanted && currentUser && product.sellerId === currentUser._id) {
-        const txStatus = product.transactionStatus || 'available';
-        const sellerControlsContainer = document.createElement('div');
-        sellerControlsContainer.id = 'seller-tx-controls';
-        sellerControlsContainer.className = 'bg-surface-container-low rounded-xl p-4 mt-4';
-        sellerControlsContainer.innerHTML = `
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-primary text-base">edit</span>
-            <h4 class="text-sm font-bold text-on-surface-variant">Cập nhật trạng thái giao dịch</h4>
-          </div>
-          <div class="grid grid-cols-2 gap-2" id="tx-status-buttons">
-            <button type="button" data-status="available" class="tx-btn flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${txStatus === 'available' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'}">
-              <span class="material-symbols-outlined text-sm">sell</span>Đang bán
-            </button>
-            <button type="button" data-status="negotiating" class="tx-btn flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${txStatus === 'negotiating' ? 'bg-amber-500 text-white' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}">
-              <span class="material-symbols-outlined text-sm">handshake</span>Đang thương lượng
-            </button>
-            <button type="button" data-status="deposited" class="tx-btn flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${txStatus === 'deposited' ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'}">
-              <span class="material-symbols-outlined text-sm">payments</span>Đã đặt cọc
-            </button>
-            <button type="button" data-status="sold" class="tx-btn flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${txStatus === 'sold' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
-              <span class="material-symbols-outlined text-sm">check_circle</span>Đã bán
-            </button>
-          </div>
-        `;
-        document.getElementById('seller-card').after(sellerControlsContainer);
-        
-        // Attach click handlers
-        document.querySelectorAll('#tx-status-buttons .tx-btn').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const newStatus = btn.dataset.status;
-            if (newStatus === txStatus) return;
-            
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span>';
-            
-            try {
-              const res = await fetch(`/api/products/${product._id}/transaction-status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ transactionStatus: newStatus })
-              });
-              const data = await res.json();
-              
-              if (data.success) {
-                window.AppUtils.showToast('Cập nhật trạng thái thành công', 'success');
-                setTimeout(() => window.location.reload(), 500);
-              } else {
-                window.AppUtils.showToast(data.message || 'Cập nhật thất bại', 'error');
-                btn.disabled = false;
-                window.location.reload();
-              }
-            } catch (err) {
-              window.AppUtils.showToast('Lỗi kết nối', 'error');
-              btn.disabled = false;
-              window.location.reload();
-            }
-          });
-        });
-      }
     }
 
     document.getElementById('btn-message').addEventListener('click', () => {
