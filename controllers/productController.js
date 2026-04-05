@@ -558,3 +558,53 @@ exports.getMyStats = async (req, res) => {
     handleProductError(res, error);
   }
 };
+
+const TRANSACTION_STATUSES = ['available', 'negotiating', 'deposited', 'sold'];
+
+exports.updateTransactionStatus = async (req, res) => {
+  try {
+    const { transactionStatus } = req.body;
+
+    if (!transactionStatus || !TRANSACTION_STATUSES.includes(transactionStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Trạng thái giao dịch không hợp lệ'
+      });
+    }
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy sản phẩm'
+      });
+    }
+
+    if (product.seller.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền cập nhật trạng thái sản phẩm này'
+      });
+    }
+
+    product.transactionStatus = transactionStatus;
+
+    if (transactionStatus === 'sold') {
+      product.status = 'sold';
+    } else if (transactionStatus === 'available') {
+      product.status = 'available';
+    }
+
+    await product.save();
+    await product.populate('seller', 'name avatar studentId');
+
+    res.json({
+      success: true,
+      message: 'Cập nhật trạng thái thành công',
+      data: product
+    });
+  } catch (error) {
+    handleProductError(res, error);
+  }
+};

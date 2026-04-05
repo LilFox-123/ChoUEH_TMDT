@@ -145,6 +145,18 @@ window.AppUtils = {
     return (product.listingType === 'wanted' ? wantedLabels : sellLabels)[product.status] || product.status;
   },
 
+  transactionStatusBadge(status) {
+    const config = {
+      available: { label: 'Đang bán', bg: 'bg-green-100', text: 'text-green-700', icon: 'sell', dot: false },
+      negotiating: { label: 'Đang thương lượng', bg: 'bg-amber-100', text: 'text-amber-700', icon: 'handshake', dot: true },
+      deposited: { label: 'Đã đặt cọc', bg: 'bg-orange-100', text: 'text-orange-700', icon: 'payments', dot: false },
+      sold: { label: 'Đã bán', bg: 'bg-gray-100', text: 'text-gray-500', icon: 'check_circle', dot: false }
+    };
+    const s = config[status] || config.available;
+    const dotHtml = s.dot ? '<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-1"></span>' : '';
+    return `<span class="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold ${s.bg} ${s.text}">${dotHtml}<span class="material-symbols-outlined text-xs">${s.icon}</span>${s.label}</span>`;
+  },
+
   async contactListingOwner(ownerId, productId) {
     const user = this.getUser() || await this.syncCurrentUser();
     if (!user) {
@@ -171,13 +183,19 @@ window.AppUtils = {
       ? this.esc(product.images[0])
       : 'https://placehold.co/400x400/e1eaeb/6f797a?text=No+Image';
     const sellerName = product.seller ? this.esc(product.seller.name) : 'Ẩn danh';
+    const txStatus = product.transactionStatus || 'available';
+    const isSold = txStatus === 'sold';
+    const grayscaleClass = isSold ? 'grayscale' : '';
 
     return `
       <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm block group">
         <a href="/product/${product._id}" class="block">
           <div class="relative h-48 overflow-hidden">
-            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${image}" alt="${this.esc(product.title)}" loading="lazy"/>
-            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-[#00464d] uppercase tracking-tight">${product.condition === 'new' ? 'Mới' : 'Đã dùng'}</div>
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${grayscaleClass}" src="${image}" alt="${this.esc(product.title)}" loading="lazy"/>
+            <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+              <div class="bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold text-[#00464d] uppercase tracking-tight">${product.condition === 'new' ? 'Mới' : 'Đã dùng'}</div>
+              ${this.transactionStatusBadge(txStatus)}
+            </div>
           </div>
           <div class="p-4 space-y-2">
             <h3 class="font-bold text-sm line-clamp-2 leading-snug">${this.esc(product.title)}</h3>
@@ -303,7 +321,7 @@ window.AppUtils = {
 document.addEventListener('DOMContentLoaded', async () => {
   await window.AppUtils.syncCurrentUser();
   window.AppUtils.updateNavbar();
-  
+
   // Start polling unread count after navbar is rendered
   if (document.querySelector('a[href="/messages"]')) {
     pollUnreadCount();
@@ -325,5 +343,5 @@ async function pollUnreadCount() {
     } else {
       badge.classList.add('hidden');
     }
-  } catch(e) { /* silent fail — không break nếu user chưa đăng nhập */ }
+  } catch (e) { /* silent fail — không break nếu user chưa đăng nhập */ }
 }

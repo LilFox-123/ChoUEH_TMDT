@@ -150,6 +150,11 @@ const productSchema = new mongoose.Schema({
     enum: ['available', 'sold', 'reserved'],
     default: 'available'
   },
+  transactionStatus: {
+    type: String,
+    enum: ['available', 'negotiating', 'deposited', 'sold'],
+    default: 'available'
+  },
   views: {
     type: Number,
     default: 0
