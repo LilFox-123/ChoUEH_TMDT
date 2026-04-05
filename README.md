@@ -6,6 +6,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Nền tảng mua bán đồ cũ thông minh dành riêng cho sinh viên Đại học Kinh tế TP.HCM (UEH)** 📱✨
+Live Hosintg: https://choueh-tmdt.onrender.com/
 
 <img width="2464" height="1355" alt="image" src="https://github.com/user-attachments/assets/6d41b358-fdae-43b1-9176-366f76fe5aa3" />
 
@@ -29,10 +30,6 @@ Frontend: EJS | Tailwind CSS 3 (CDN) | Custom JS per page
 Auth: JWT + Cookies | bcryptjs
 Upload: Multer (local public/uploads)
 Security: Helmet | CORS | Rate Limit (200req/15min)
-```
-**Dependencies chính**:
-```bash
-npm i express mongoose ejs multer helmet cors cookie-parser jsonwebtoken bcryptjs express-rate-limit dotenv
 ```
 
 ## 📂 Cấu trúc dự án
