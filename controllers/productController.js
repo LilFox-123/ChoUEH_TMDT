@@ -259,8 +259,13 @@ exports.getProducts = async (req, res) => {
 
     if (category) query.category = category;
     if (condition && normalizedListingType !== 'wanted') query.condition = condition;
-    query.status = status || 'available';
-    if (seller) query.seller = seller;
+    // Skip status filter when fetching seller's own listings (dashboard view)
+    if (seller && !status) {
+      query.seller = seller;
+    } else {
+      query.status = status || 'available';
+      if (seller) query.seller = seller;
+    }
     if (courseCode) query.courseCode = { $regex: `^${normalizeText(courseCode)}`, $options: 'i' };
     if (faculty) query.faculty = faculty;
     if (normalizedListingType) query.listingType = normalizedListingType;
@@ -589,12 +594,6 @@ exports.updateTransactionStatus = async (req, res) => {
     }
 
     product.transactionStatus = transactionStatus;
-
-    if (transactionStatus === 'sold') {
-      product.status = 'sold';
-    } else if (transactionStatus === 'available') {
-      product.status = 'available';
-    }
 
     await product.save();
 

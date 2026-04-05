@@ -48,16 +48,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load my products
   async function loadMyProducts() {
     try {
-      const res = await fetch(`/api/products?seller=${user._id}&status=available&limit=50`);
+      // Fetch ALL seller products regardless of status (no status filter for owner's dashboard)
+      const res = await fetch(`/api/products?seller=${user._id}&limit=100`);
       const data = await res.json();
       const container = document.getElementById('my-products');
       const noProducts = document.getElementById('no-products');
 
-      // Also load sold products
-      const resSold = await fetch(`/api/products?seller=${user._id}&status=sold&limit=50`);
-      const dataSold = await resSold.json();
-
-      const allProducts = [...(data.data || []), ...(dataSold.data || [])];
+      const allProducts = data.data || [];
 
       if (allProducts.length > 0) {
         container.innerHTML = allProducts.map(p => window.AppUtils.dashboardCard(p)).join('');
