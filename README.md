@@ -6,6 +6,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Nền tảng mua bán đồ cũ thông minh dành riêng cho sinh viên Đại học Kinh tế TP.HCM (UEH)** 📱✨
+
+---
 Live Hosintg: https://choueh-tmdt.onrender.com/
 
 <img width="2464" height="1355" alt="image" src="https://github.com/user-attachments/assets/6d41b358-fdae-43b1-9176-366f76fe5aa3" />
