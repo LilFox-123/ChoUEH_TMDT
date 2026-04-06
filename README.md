@@ -146,24 +146,7 @@ Conversations tied to user/product.
 - **Responsive**: Mobile-first, dark mode support
 - **Partials**: navbar.ejs, footer.ejs
 
-## 🌱 Scripts hữu ích
-```bash
-npm start              # 🚀 Production server
-npm run seed           # 🌱 Create sample users/products
-npm run patch-products # 🛠️ Fix product data
-```
 
-## ☁️ Deployment Guide
-### ✅ Khuyến nghị: Render/Railway (Free tier OK)
-```
-Build: npm install
-Start: npm start
-Env: MONGODB_URI*, JWT_SECRET*, NODE_ENV=production
-```
-**Static uploads**: public/uploads → Git ignore + external storage (Cloudinary).
-
-### ⚠️ Vercel: Serverless limitations
-- OK for API but file uploads need refactor.
 
 ## 🔒 Security & Best Practices
 ✅ **Implemented**:
