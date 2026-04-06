@@ -78,7 +78,7 @@ npm run seed
 ```
 🌐 **http://localhost:3000**
 
-**Admin test**: `an.nguyen@st.ueh.edu.vn` / `123456`
+**Admin test**: `phuc.ho@st.ueh.edu.vn` / `123456`
 
 ## 🗄️ Database Schemas
 
