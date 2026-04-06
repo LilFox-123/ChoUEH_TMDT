@@ -162,7 +162,8 @@ Conversations tied to user/product.
 
 
 
-© 2026 Chợ UEH – Đồ án môn học TMDT, không phải sản phẩm chính thức của Trường Đại học Kinh tế TP.HCM.
+© 2026 Chợ UEH – Đồ án môn học Thương Mại Điện Tử, không phải sản phẩm chính thức của Đại học Kinh tế TP. Hồ Chí Minh (UEH).
+      Logo và linh vật Zeen thuộc sở hữu của UEH University.
 
 
 
