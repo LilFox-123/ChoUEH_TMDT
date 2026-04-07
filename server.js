@@ -59,6 +59,7 @@ app.use('/api/products', apiLimiter, require('./routes/productRoutes'));
 app.use('/api/messages', apiLimiter, require('./routes/messageRoutes'));
 app.use('/api/admin', apiLimiter, require('./routes/adminRoutes'));
 app.use('/api/reviews', apiLimiter, require('./routes/reviewRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 // ─── View Routes ───
 app.use('/', require('./routes/viewRoutes'));

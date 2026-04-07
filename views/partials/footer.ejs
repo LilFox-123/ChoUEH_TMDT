@@ -107,11 +107,50 @@
 
     <!-- Modal -->
     <div id="support-modal"
-      style="display:none;position:absolute;bottom:60px;right:0;width:220px;background:#ffffff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow:hidden;transform:translateY(8px);opacity:0;transition:transform 0.2s ease,opacity 0.2s ease;">
+      style="display:none;position:absolute;bottom:60px;right:0;width:320px;background:#ffffff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow:hidden;transform:translateY(8px);opacity:0;transition:transform 0.2s ease,opacity 0.2s ease;">
       <div style="background:#00464d;padding:12px 16px;">
-        <p style="color:white;font-size:13px;font-weight:700;margin:0;">Hỗ trợ sinh viên</p>
-        <p style="color:rgba(255,255,255,0.7);font-size:11px;margin:4px 0 0;">Chúng tôi luôn sẵn sàng giúp bạn!</p>
+        <p style="color:white;font-size:13px;font-weight:700;margin:0;">🌱 Zeen AI - Trợ lý Chợ UEH</p>
+        <p style="color:rgba(255,255,255,0.7);font-size:11px;margin:4px 0 0;">Hỏi mình bất cứ điều gì về Chợ UEH!</p>
       </div>
+
+      <!-- Zeen AI Chat Area -->
+      <div id="zeen-chat-area" style="display:flex;flex-direction:column;height:320px;">
+        <!-- Messages area -->
+        <div id="zeen-messages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;">
+        </div>
+
+        <!-- Typing indicator -->
+        <div id="zeen-typing" style="display:none;padding:4px 12px;font-size:11px;color:#6f797a;">
+          Zeen đang trả lời...
+        </div>
+
+        <!-- Quick suggestions -->
+        <div id="zeen-suggestions" style="padding:8px 12px;display:flex;flex-wrap:wrap;gap:4px;">
+          <button onclick="zeenSuggest('Tìm sách giáo trình rẻ')"
+            style="font-size:11px;padding:4px 8px;border:1px solid #bec8ca;border-radius:20px;background:white;cursor:pointer;color:#3f484a;">📚
+            Tìm sách</button>
+          <button onclick="zeenSuggest('Laptop sinh viên giá rẻ')"
+            style="font-size:11px;padding:4px 8px;border:1px solid #bec8ca;border-radius:20px;background:white;cursor:pointer;color:#3f484a;">💻
+            Laptop</button>
+          <button onclick="zeenSuggest('Cách đăng tin bán đồ')"
+            style="font-size:11px;padding:4px 8px;border:1px solid #bec8ca;border-radius:20px;background:white;cursor:pointer;color:#3f484a;">❓
+            Hướng dẫn</button>
+        </div>
+
+        <!-- Input area -->
+        <div style="padding:8px 12px;border-top:1px solid #e1eaeb;display:flex;gap:6px;align-items:center;">
+          <input id="zeen-input" type="text" placeholder="Nhắn Zeen AI..." maxlength="200"
+            style="flex:1;border:1px solid #bec8ca;border-radius:20px;padding:6px 12px;font-size:12px;outline:none;" />
+          <button id="zeen-send" onclick="zeenSendMessage()"
+            style="width:30px;height:30px;border-radius:50%;background:#00464d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span class="material-symbols-outlined" style="color:white;font-size:16px;">send</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="border-top:1px solid #e1eaeb;margin:0 8px;"></div>
+
       <div style="padding:8px;">
         <a id="support-message-link" href="/messages"
           style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#151d1e;font-size:13px;font-weight:600;transition:background 0.15s;"
@@ -133,7 +172,7 @@
       style="width:52px;height:52px;border-radius:50%;background:#00464d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,70,77,0.4);transition:transform 0.2s,box-shadow 0.2s;"
       onmouseover="this.style.transform='scale(1.08)';this.style.boxShadow='0 6px 20px rgba(0,70,77,0.5)'"
       onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(0,70,77,0.4)'">
-      <span id="support-icon" class="material-symbols-outlined" style="color:white;font-size:22px;">headset_mic</span>
+      <span id="support-icon" class="material-symbols-outlined" style="color:white;font-size:22px;">smart_toy</span>
     </button>
 
     <!-- Badge số tin nhắn chưa đọc -->
@@ -156,10 +195,11 @@
             modal.style.opacity = '1';
           }, 10);
           icon.textContent = 'close';
+          zeenInit();
         } else {
           modal.style.transform = 'translateY(8px)';
           modal.style.opacity = '0';
-          icon.textContent = 'headset_mic';
+          icon.textContent = 'smart_toy';
           setTimeout(function () { modal.style.display = 'none'; }, 200);
         }
       };
@@ -180,5 +220,113 @@
         }
       }).catch(function () { });
     })();
+
+    // Zeen AI Chat Functions
+    var zeenHistory = [];
+    var zeenHasInteracted = false;
+    var zeenInitialized = false;
+
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function zeenInit() {
+      if (zeenInitialized) return;
+      zeenInitialized = true;
+      zeenAddBubble('bot', 'Xin chào! Mình là Zeen AI 🌱 Mình có thể giúp bạn tìm sản phẩm, hướng dẫn sử dụng Chợ UEH, hoặc giải đáp thắc mắc. Bạn cần gì nào?');
+    }
+
+    function zeenAddBubble(role, text, products) {
+      var container = document.getElementById('zeen-messages');
+      var bubble = document.createElement('div');
+      var isBot = role === 'bot';
+      bubble.style.cssText = isBot
+        ? 'background:#f0f9fa;border-radius:12px 12px 12px 0;padding:8px 12px;font-size:12px;color:#151d1e;max-width:85%;line-height:1.5;'
+        : 'background:#00464d;border-radius:12px 12px 0 12px;padding:8px 12px;font-size:12px;color:white;max-width:85%;align-self:flex-end;line-height:1.5;';
+      bubble.textContent = text;
+      container.appendChild(bubble);
+
+      if (products && products.length > 0) {
+        var cards = document.createElement('div');
+        cards.style.cssText = 'display:flex;flex-direction:column;gap:6px;margin-top:4px;';
+        products.forEach(function (p) {
+          var card = document.createElement('a');
+          card.href = '/product/' + p._id;
+          card.target = '_blank';
+          card.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 8px;background:white;border:1px solid #e1eaeb;border-radius:8px;text-decoration:none;';
+          var img = document.createElement('img');
+          img.src = (p.images && p.images[0]) || 'https://placehold.co/32x32/e1eaeb/6f797a?text=?';
+          img.style.cssText = 'width:32px;height:32px;object-fit:cover;border-radius:4px;flex-shrink:0;';
+          var info = document.createElement('div');
+          info.style.cssText = 'flex:1;min-width:0;';
+          info.innerHTML = '<p style="font-size:11px;font-weight:600;color:#151d1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHTML(p.title) + '</p><p style="font-size:11px;color:#EC6D33;font-weight:700;">' + (p.price ? p.price.toLocaleString('vi-VN') + 'đ' : 'Thương lượng') + '</p>';
+          card.appendChild(img);
+          card.appendChild(info);
+          cards.appendChild(card);
+        });
+        container.appendChild(cards);
+      }
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function zeenSuggest(text) {
+      document.getElementById('zeen-input').value = text;
+      zeenSendMessage();
+    }
+
+    async function zeenSendMessage() {
+      var input = document.getElementById('zeen-input');
+      var msg = input.value.trim();
+      if (!msg) return;
+
+      if (!zeenHasInteracted) {
+        zeenHasInteracted = true;
+        var sug = document.getElementById('zeen-suggestions');
+        if (sug) sug.style.display = 'none';
+      }
+
+      input.value = '';
+      zeenAddBubble('user', msg);
+
+      document.getElementById('zeen-typing').style.display = 'block';
+      document.getElementById('zeen-send').disabled = true;
+
+      try {
+        var res = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, history: zeenHistory })
+        });
+        var data = await res.json();
+
+        document.getElementById('zeen-typing').style.display = 'none';
+        document.getElementById('zeen-send').disabled = false;
+
+        if (data.success) {
+          zeenHistory.push({ role: 'user', content: msg });
+          zeenHistory.push({ role: 'assistant', content: data.reply });
+          if (zeenHistory.length > 20) zeenHistory = zeenHistory.slice(-20);
+          zeenAddBubble('bot', data.reply, data.products);
+        } else {
+          zeenAddBubble('bot', data.message || 'Có lỗi xảy ra, bạn thử lại nhé 😅');
+        }
+      } catch (e) {
+        document.getElementById('zeen-typing').style.display = 'none';
+        document.getElementById('zeen-send').disabled = false;
+        zeenAddBubble('bot', 'Zeen AI đang bận, vui lòng thử lại sau nhé! 🙏');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var inp = document.getElementById('zeen-input');
+      if (inp) {
+        inp.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); zeenSendMessage(); }
+        });
+      }
+    });
   </script>
 </footer>
