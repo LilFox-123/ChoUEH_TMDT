@@ -80,7 +80,7 @@ function detectCategory(message) {
 // @access  Public
 exports.chat = async (req, res) => {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
@@ -150,34 +150,41 @@ exports.chat = async (req, res) => {
       { role: 'user', content: userMessage }
     ];
 
-    // STEP 4: Call Anthropic API
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages
-      })
-    });
+    // STEP 4: Call Gemini API
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          contents: messages.map(m => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }]
+          })),
+          generationConfig: {
+            maxOutputTokens: 400,
+            temperature: 0.7
+          }
+        })
+      }
+    );
 
-    if (!anthropicRes.ok) {
-      console.error('Anthropic API error:', anthropicRes.status, await anthropicRes.text());
+    if (!geminiRes.ok) {
+      console.error('Gemini API error:', geminiRes.status, await geminiRes.text());
       return res.status(502).json({
         success: false,
         message: 'Zeen AI đang bận, vui lòng thử lại'
       });
     }
 
-    const anthropicData = await anthropicRes.json();
+    const geminiData = await geminiRes.json();
 
     // Extract reply from response
-    const reply = anthropicData.content?.[0]?.text || 'Xin lỗi, mình chưa hiểu ý bạn. Bạn có thể diễn đạt khác được không? 🤔';
+    const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text
+      || 'Xin lỗi, mình chưa hiểu ý bạn. Bạn có thể diễn đạt khác được không? 🤔';
 
     res.json({
       success: true,
