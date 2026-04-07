@@ -80,7 +80,7 @@ function detectCategory(message) {
 // @access  Public
 exports.chat = async (req, res) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
@@ -150,40 +150,36 @@ exports.chat = async (req, res) => {
       { role: 'user', content: userMessage }
     ];
 
-    // STEP 4: Call Gemini API
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: systemPrompt }]
-          },
-          contents: messages.map(m => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.content }]
-          })),
-          generationConfig: {
-            maxOutputTokens: 400,
-            temperature: 0.7
-          }
-        })
-      }
-    );
+    // STEP 4: Call Groq API
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages
+        ],
+        max_tokens: 400,
+        temperature: 0.7
+      })
+    });
 
-    if (!geminiRes.ok) {
-      console.error('Gemini API error:', geminiRes.status, await geminiRes.text());
+    if (!groqRes.ok) {
+      console.error('Groq API error:', groqRes.status, await groqRes.text());
       return res.status(502).json({
         success: false,
         message: 'Zeen AI đang bận, vui lòng thử lại'
       });
     }
 
-    const geminiData = await geminiRes.json();
+    const groqData = await groqRes.json();
 
     // Extract reply from response
-    const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text
+    const reply = groqData.choices?.[0]?.message?.content
       || 'Xin lỗi, mình chưa hiểu ý bạn. Bạn có thể diễn đạt khác được không? 🤔';
 
     res.json({
