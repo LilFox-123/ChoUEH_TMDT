@@ -1,4 +1,10 @@
 // ===== Chợ UEH - Messages (AJAX Chat) =====
+// FIX 1: Spinner only on initial load, not during polling
+// FIX 2: Optimistic UI for sending messages (instant feedback)
+// FIX 3: Diff-based message polling (only append new messages)
+// FIX 4: Dirty flag for conversation list (update only when needed)
+// FIX 5: Adaptive polling with Page Visibility API (pause when tab hidden)
+// FIX 6: Scroll preservation (don't jump when user is reading old messages)
 
 function escapeHTML(str) {
   return String(str ?? '').replace(/[&<>"']/g, (char) => ({
@@ -123,6 +129,7 @@ function createMessageBubble(message, currentUserId) {
   if (isMine) {
     const wrapper = document.createElement('div');
     wrapper.className = 'flex flex-col items-end gap-1';
+    wrapper.dataset.messageId = message._id;
 
     const bubble = document.createElement('div');
     bubble.className = 'bg-[#005f69] text-white px-4 py-2.5 rounded-2xl rounded-br-none shadow-md max-w-[80%]';
@@ -136,6 +143,7 @@ function createMessageBubble(message, currentUserId) {
 
   const wrapper = document.createElement('div');
   wrapper.className = 'flex items-end gap-2 max-w-[80%]';
+  wrapper.dataset.messageId = message._id;
 
   const avatar = document.createElement('div');
   avatar.className = 'w-6 h-6 bg-[#e1eaeb] rounded-full flex items-center justify-center';
@@ -173,7 +181,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '/login';
     return;
   }
+
   let activeChat = null;
+  let lastMessageId = null;           // FIX 3: Track last message for diff
+  let conversationsDirty = true;      // FIX 4: Dirty flag for conversations
+  let pollIntervalId = null;          // FIX 5: Adaptive polling interval ID
+  const POLL_INTERVAL = 8000;         // FIX 5: 8 seconds instead of 5
 
   // Check URL params for direct chat
   const urlParams = new URLSearchParams(window.location.search);
@@ -183,8 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load conversations
   async function loadConversations() {
     try {
-      const res = await fetch('/api/messages/conversations', {
-      });
+      const res = await fetch('/api/messages/conversations');
       const data = await res.json();
       const list = document.getElementById('conversation-list');
 
@@ -196,39 +208,91 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // FIX 6: Check if user is near bottom of chat
+  function isNearBottom(container) {
+    return container.scrollTop + container.clientHeight >= container.scrollHeight - 100;
+  }
+
+  // FIX 3: Append only new messages to container
+  function appendNewMessages(container, newMessages, currentUserId) {
+    const fragment = document.createDocumentFragment();
+    newMessages.forEach((message) => {
+      fragment.appendChild(createMessageBubble(message, currentUserId));
+    });
+    container.appendChild(fragment);
+  }
+
   // Open chat
-  window.openChat = async function(userId, productId, name, productTitle) {
+  window.openChat = async function (userId, productId, name, productTitle) {
     activeChat = { userId, productId };
+    lastMessageId = null;  // FIX 3: Reset on new chat
+    conversationsDirty = true;  // FIX 4: Mark dirty on chat open
 
     document.getElementById('chat-placeholder').classList.add('hidden');
     document.getElementById('chat-window').classList.remove('hidden');
     document.getElementById('chat-name').textContent = name;
     document.getElementById('chat-product-name').textContent = productTitle;
 
-    await loadMessages(userId, productId);
+    await loadMessages(userId, productId, { showSpinner: true });  // FIX 1: Show spinner on initial
     loadConversations();
   };
 
-  // Load messages
-  async function loadMessages(userId, productId) {
+  // Load messages - FIX 1: Added options.showSpinner
+  async function loadMessages(userId, productId, options = {}) {
+    const { showSpinner = false } = options;
     const container = document.getElementById('chat-messages');
-    renderMessageLoading(container);
+
+    // FIX 1: Only show spinner on initial load
+    if (showSpinner) {
+      renderMessageLoading(container);
+    }
 
     try {
-      const res = await fetch(`/api/messages/${userId}/${productId}`, {
-      });
+      const res = await fetch(`/api/messages/${userId}/${productId}`);
       const data = await res.json();
 
       if (data.success) {
-        renderMessages(container, data.data || [], user._id);
-        container.scrollTop = container.scrollHeight;
+        const messages = data.data || [];
+        const newLastId = messages.length > 0 ? messages[messages.length - 1]._id : null;
+
+        // FIX 3: Diff-based update
+        if (lastMessageId === null || showSpinner) {
+          // First load or spinner shown - full render
+          renderMessages(container, messages, user._id);
+          container.scrollTop = container.scrollHeight;
+        } else if (newLastId !== lastMessageId) {
+          // FIX 3: Find new messages and append only those
+          const lastIndex = messages.findIndex(m => m._id === lastMessageId);
+          const newMessages = lastIndex >= 0 ? messages.slice(lastIndex + 1) : messages;
+
+          if (newMessages.length > 0) {
+            // FIX 6: Check scroll position before appending
+            const wasNearBottom = isNearBottom(container);
+
+            appendNewMessages(container, newMessages, user._id);
+
+            // FIX 6: Only auto-scroll if user was near bottom
+            if (wasNearBottom) {
+              container.scrollTop = container.scrollHeight;
+            }
+
+            // FIX 4: Mark conversations dirty when new messages arrive
+            conversationsDirty = true;
+          }
+        }
+        // else: no new messages, skip DOM update entirely
+
+        lastMessageId = newLastId;
       }
     } catch (err) {
-      renderMessagesError(container);
+      if (showSpinner) {
+        renderMessagesError(container);
+      }
+      console.error('Failed to load messages:', err);
     }
   }
 
-  // Send message
+  // Send message - FIX 2: Optimistic UI
   const messageForm = document.getElementById('message-form');
   if (messageForm) {
     messageForm.addEventListener('submit', async (e) => {
@@ -236,10 +300,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!activeChat) return;
 
       const input = document.getElementById('message-input');
+      const sendBtn = messageForm.querySelector('button[type="submit"]');
       const content = input.value.trim();
       if (!content) return;
 
+      // FIX 2: Clear input immediately
+      const savedContent = content;
       input.value = '';
+
+      // FIX 2: Create optimistic message
+      const optimisticId = 'optimistic-' + Date.now();
+      const optimisticMessage = {
+        _id: optimisticId,
+        sender: { _id: user._id },
+        content: savedContent,
+        createdAt: new Date().toISOString()
+      };
+
+      // FIX 2: Append optimistic bubble immediately
+      const container = document.getElementById('chat-messages');
+      const optimisticBubble = createMessageBubble(optimisticMessage, user._id);
+      container.appendChild(optimisticBubble);
+
+      // FIX 2 + FIX 6: Always scroll to bottom when user sends
+      container.scrollTop = container.scrollHeight;
+
+      // FIX 2: Disable send button
+      if (sendBtn) {
+        sendBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
 
       try {
         const res = await fetch('/api/messages', {
@@ -248,20 +337,88 @@ document.addEventListener('DOMContentLoaded', async () => {
           body: JSON.stringify({
             receiverId: activeChat.userId,
             productId: activeChat.productId,
-            content
+            content: savedContent
           })
         });
         const data = await res.json();
 
+        // FIX 2: Re-enable send button
+        if (sendBtn) {
+          sendBtn.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
         if (data.success) {
-          await loadMessages(activeChat.userId, activeChat.productId);
-          loadConversations();
+          // FIX 2: Replace optimistic bubble with real message
+          const realMessage = data.data;
+          const existingBubble = container.querySelector(`[data-message-id="${optimisticId}"]`);
+          if (existingBubble && realMessage) {
+            const realBubble = createMessageBubble(realMessage, user._id);
+            existingBubble.replaceWith(realBubble);
+            lastMessageId = realMessage._id;  // Update tracking
+          }
+
+          // FIX 4: Mark conversations dirty after send
+          conversationsDirty = true;
+        } else {
+          // FIX 2: Error - remove optimistic, restore input
+          const failedBubble = container.querySelector(`[data-message-id="${optimisticId}"]`);
+          if (failedBubble) failedBubble.remove();
+          input.value = savedContent;
+          window.AppUtils.showToast('Lỗi gửi tin nhắn', 'error');
         }
       } catch (err) {
+        // FIX 2: Re-enable send button on error
+        if (sendBtn) {
+          sendBtn.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        // FIX 2: Remove optimistic bubble and restore input
+        const failedBubble = container.querySelector(`[data-message-id="${optimisticId}"]`);
+        if (failedBubble) failedBubble.remove();
+        input.value = savedContent;
         window.AppUtils.showToast('Lỗi gửi tin nhắn', 'error');
       }
     });
   }
+
+  // FIX 5: Polling function
+  function pollMessages() {
+    if (activeChat) {
+      loadMessages(activeChat.userId, activeChat.productId, { showSpinner: false });
+    }
+
+    // FIX 4: Only reload conversations if dirty
+    if (conversationsDirty) {
+      loadConversations();
+      conversationsDirty = false;
+    }
+  }
+
+  // FIX 5: Start polling
+  function startPolling() {
+    if (pollIntervalId) return;  // Already polling
+    pollIntervalId = setInterval(pollMessages, POLL_INTERVAL);
+  }
+
+  // FIX 5: Stop polling
+  function stopPolling() {
+    if (pollIntervalId) {
+      clearInterval(pollIntervalId);
+      pollIntervalId = null;
+    }
+  }
+
+  // FIX 5: Handle visibility change
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      // Tab became visible - fetch immediately and restart polling
+      pollMessages();
+      startPolling();
+    } else {
+      // Tab hidden - pause polling
+      stopPolling();
+    }
+  });
 
   // Initial load
   loadConversations();
@@ -279,11 +436,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Poll for new messages every 5 seconds
-  setInterval(() => {
-    if (activeChat) {
-      loadMessages(activeChat.userId, activeChat.productId);
-    }
-    loadConversations();
-  }, 5000);
+  // FIX 5: Start polling (only if tab is visible)
+  if (document.visibilityState === 'visible') {
+    startPolling();
+  }
 });
