@@ -155,6 +155,11 @@ const productSchema = new mongoose.Schema({
     enum: ['available', 'negotiating', 'deposited', 'sold'],
     default: 'available'
   },
+  buyerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
   views: {
     type: Number,
     default: 0

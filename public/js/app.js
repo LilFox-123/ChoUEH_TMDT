@@ -259,7 +259,7 @@ window.AppUtils = {
     const typeBadgeClass = isWanted
       ? 'bg-[#fff2cc] text-[#9a6b00]'
       : 'bg-[#d0e4ff] text-[#295781]';
-    
+
     // Transaction status for sell listings
     const txStatus = product.transactionStatus || 'available';
     const txBadgeConfig = {
@@ -274,7 +274,7 @@ window.AppUtils = {
       deposited: 'Đã đặt cọc',
       sold: 'Đã bán'
     };
-    
+
     // For wanted listings, use old status system
     const wantedStatusColors = {
       available: 'bg-green-100 text-green-700',
@@ -284,10 +284,10 @@ window.AppUtils = {
       available: 'Đang cần',
       sold: 'Đã tìm được'
     };
-    
+
     const badgeClass = isWanted ? (wantedStatusColors[product.status] || '') : (txBadgeConfig[txStatus] || '');
     const badgeLabel = isWanted ? (wantedLabels[product.status] || product.status) : (txLabels[txStatus] || txStatus);
-    
+
     // Status control: dropdown for sell, toggle for wanted
     let statusControl;
     if (isWanted) {
@@ -295,7 +295,7 @@ window.AppUtils = {
       statusControl = `<button onclick="toggleStatus('${product._id}','${product.status}','wanted')" class="flex-1 text-xs py-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold hover:bg-[#dbe4e5] transition-colors">${toggleLabel}</button>`;
     } else {
       statusControl = `
-        <select onchange="updateTxStatus('${product._id}', this.value, this)" class="flex-1 text-xs py-2 px-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold border-none focus:ring-2 focus:ring-primary cursor-pointer">
+        <select onchange="handleTxStatusChange('${product._id}', '${txStatus}', this)" class="flex-1 text-xs py-2 px-2 bg-[#e7f0f0] text-[#00464d] rounded-lg font-semibold border-none focus:ring-2 focus:ring-primary cursor-pointer">
           <option value="available" ${txStatus === 'available' ? 'selected' : ''}>Đang bán</option>
           <option value="negotiating" ${txStatus === 'negotiating' ? 'selected' : ''}>Thương lượng</option>
           <option value="deposited" ${txStatus === 'deposited' ? 'selected' : ''}>Đã đặt cọc</option>

@@ -100,6 +100,132 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
+  // Handle transaction status change with buyer selection for 'sold'
+  window.handleTxStatusChange = function (productId, currentStatus, selectEl) {
+    const newStatus = selectEl.value;
+
+    if (newStatus === 'sold') {
+      // Revert select to current value while modal is open
+      selectEl.value = currentStatus;
+      // Show buyer selection modal
+      showBuyerSelectModal(productId, () => {
+        // After buyer selection (or skip), update status to sold
+        updateTxStatus(productId, 'sold', selectEl);
+      });
+    } else {
+      updateTxStatus(productId, newStatus, selectEl);
+    }
+  };
+
+  // Show buyer selection modal
+  async function showBuyerSelectModal(productId, onConfirm) {
+    try {
+      const res = await fetch(`/api/products/${productId}/buyers`);
+      const data = await res.json();
+
+      if (!data.success) {
+        window.AppUtils.showToast('Lỗi tải danh sách người mua', 'error');
+        return;
+      }
+
+      const buyers = data.buyers || [];
+
+      if (buyers.length === 0) {
+        // No buyers found - ask to confirm
+        if (confirm('Không tìm thấy người nhắn tin về sản phẩm này. Bạn vẫn muốn đánh dấu đã bán không?')) {
+          onConfirm();
+        }
+        return;
+      }
+
+      // Create modal
+      const modal = document.createElement('div');
+      modal.id = 'buyer-modal';
+      modal.className = 'fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4';
+
+      const getInitials = (name) => {
+        if (!name) return '?';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+      };
+
+      const buyerListHtml = buyers.map((buyer, idx) => `
+        <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant/30 cursor-pointer hover:bg-surface-container-low transition-colors">
+          <input type="radio" name="selected-buyer" value="${buyer._id}" class="accent-primary" ${idx === 0 ? 'checked' : ''}>
+          <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary text-sm font-bold shrink-0">
+            ${buyer.avatar ? `<img src="${window.AppUtils.esc(buyer.avatar)}" class="w-full h-full object-cover rounded-full">` : getInitials(buyer.name)}
+          </div>
+          <span class="font-semibold text-sm text-on-surface">${window.AppUtils.esc(buyer.name)}</span>
+        </label>
+      `).join('');
+
+      modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+          <h3 class="font-bold text-lg text-on-surface mb-1">Bạn đã bán cho ai?</h3>
+          <p class="text-xs text-on-surface-variant mb-4">Chọn người mua để họ có thể đánh giá bạn sau này</p>
+          <div id="buyer-list" class="space-y-2 max-h-60 overflow-y-auto mb-4">
+            ${buyerListHtml}
+          </div>
+          <div class="flex gap-3">
+            <button id="buyer-skip" class="flex-1 py-2 text-sm border border-outline-variant rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors">Bỏ qua</button>
+            <button id="buyer-confirm" class="flex-1 py-2 text-sm bg-primary text-white rounded-xl font-bold hover:bg-primary-container transition-colors">Xác nhận</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      // Handle skip
+      modal.querySelector('#buyer-skip').addEventListener('click', () => {
+        modal.remove();
+        onConfirm();
+      });
+
+      // Handle confirm
+      modal.querySelector('#buyer-confirm').addEventListener('click', async () => {
+        const selectedRadio = modal.querySelector('input[name="selected-buyer"]:checked');
+        if (!selectedRadio) {
+          modal.remove();
+          onConfirm();
+          return;
+        }
+
+        const buyerId = selectedRadio.value;
+
+        try {
+          const setRes = await fetch(`/api/products/${productId}/buyer`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ buyerId })
+          });
+
+          const setData = await setRes.json();
+
+          if (setData.success) {
+            window.AppUtils.showToast('Đã lưu thông tin người mua', 'success');
+          }
+        } catch (err) {
+          console.error('Failed to set buyer:', err);
+        }
+
+        modal.remove();
+        onConfirm();
+      });
+
+      // Close on backdrop click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      });
+
+    } catch (err) {
+      console.error('Failed to load buyers:', err);
+      window.AppUtils.showToast('Lỗi tải danh sách người mua', 'error');
+    }
+  }
+
   // Update transaction status (for sell listings)
   window.updateTxStatus = async function (productId, newStatus, selectEl) {
     const txLabels = {

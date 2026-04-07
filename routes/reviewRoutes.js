@@ -5,6 +5,38 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
+// @desc    Check if review exists for a product by a reviewer
+// @route   GET /api/reviews?product=:productId&reviewer=:reviewerId
+// @access  Public
+router.get('/', async (req, res) => {
+  try {
+    const { product: productId, reviewer: reviewerId } = req.query;
+
+    if (!productId || !reviewerId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Product ID và Reviewer ID là bắt buộc'
+      });
+    }
+
+    const review = await Review.findOne({
+      product: productId,
+      reviewer: reviewerId
+    });
+
+    res.json({
+      success: true,
+      exists: !!review,
+      review: review || null
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
 // @desc    Create a new review
 // @route   POST /api/reviews
 // @access  Private
@@ -31,7 +63,7 @@ router.post('/', protect, async (req, res) => {
 
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: 'Sản phẩm không tồn tại'
       });
@@ -39,11 +71,27 @@ router.post('/', protect, async (req, res) => {
 
     const sellerId = product.seller;
 
-    // Reviewer must not be the seller (can't self-review)
-    if (sellerId.toString() === reviewerId.toString()) {
+    // Guard: product must be sold
+    if (product.transactionStatus !== 'sold') {
       return res.status(400).json({
         success: false,
-        message: 'Bạn không thể tự đánh giá chính mình'
+        message: 'Sản phẩm chưa hoàn thành giao dịch'
+      });
+    }
+
+    // Guard: reviewer must be the buyer
+    if (!product.buyerId || product.buyerId.toString() !== reviewerId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Chỉ người mua mới có thể đánh giá'
+      });
+    }
+
+    // Guard: reviewer must not be the seller (can't self-review)
+    if (sellerId.toString() === reviewerId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Không thể tự đánh giá'
       });
     }
 
@@ -80,7 +128,7 @@ router.post('/', protect, async (req, res) => {
       const newRating = ((oldRating * oldTotal) + rating) / newTotal;
 
       await User.findByIdAndUpdate(sellerId, {
-        rating: parseFloat(newRating.toFixed(1)),
+        rating: Math.round(newRating * 10) / 10,
         totalReviews: newTotal
       });
     }

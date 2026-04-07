@@ -359,18 +359,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentUser = window.AppUtils.getUser();
     const isSold = product.transactionStatus === 'sold';
     const isOwner = currentUser && product.sellerId === currentUser._id;
-    
-    // Show rating section only if: logged in, not the seller, and transaction is sold
-    if (currentUser && !isOwner && isSold && ratingSection) {
+    const isBuyer = currentUser && product.buyerId && product.buyerId === currentUser._id;
+
+    // Show rating section only if: logged in, is the buyer, transaction is sold, not the seller
+    if (currentUser && isBuyer && isSold && !isOwner && ratingSection) {
+      // First check if user already reviewed
+      try {
+        const checkRes = await fetch(`/api/reviews?product=${product._id}&reviewer=${currentUser._id}`);
+        const checkData = await checkRes.json();
+
+        if (checkData.success && checkData.exists) {
+          // Already reviewed - show message instead of form
+          ratingSection.classList.remove('hidden');
+          ratingSection.innerHTML = `
+            <div class="text-center py-4">
+              <span class="material-symbols-outlined text-4xl text-green-500 mb-2">check_circle</span>
+              <p class="text-green-700 font-semibold">✅ Bạn đã đánh giá giao dịch này</p>
+            </div>
+          `;
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to check review status:', err);
+      }
+
       ratingSection.classList.remove('hidden');
-      
+
       let selectedRating = 0;
       const starBtns = ratingSection.querySelectorAll('.star-btn');
       const submitBtn = document.getElementById('submit-rating');
       const commentEl = document.getElementById('rating-comment');
       const ratingForm = document.getElementById('rating-form');
       const ratingSuccess = document.getElementById('rating-success');
-      
+
       function updateStars(rating) {
         starBtns.forEach((btn, idx) => {
           const icon = btn.querySelector('.material-symbols-outlined');
@@ -385,29 +406,29 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         });
       }
-      
+
       starBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           selectedRating = parseInt(btn.dataset.star);
           updateStars(selectedRating);
           submitBtn.disabled = false;
         });
-        
+
         btn.addEventListener('mouseenter', () => {
           updateStars(parseInt(btn.dataset.star));
         });
-        
+
         btn.addEventListener('mouseleave', () => {
           updateStars(selectedRating);
         });
       });
-      
+
       submitBtn.addEventListener('click', async () => {
         if (selectedRating < 1) return;
-        
+
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Đang gửi...';
-        
+
         try {
           const res = await fetch('/api/reviews', {
             method: 'POST',
@@ -418,16 +439,23 @@ document.addEventListener('DOMContentLoaded', async () => {
               comment: commentEl.value.trim()
             })
           });
-          
+
           const data = await res.json();
-          
+
           if (res.status === 409) {
             window.AppUtils.showToast('Bạn đã đánh giá giao dịch này rồi', 'warning');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Gửi đánh giá';
             return;
           }
-          
+
+          if (res.status === 403) {
+            window.AppUtils.showToast('Bạn không có quyền đánh giá sản phẩm này', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Gửi đánh giá';
+            return;
+          }
+
           if (data.success) {
             ratingForm.classList.add('hidden');
             ratingSuccess.classList.remove('hidden');

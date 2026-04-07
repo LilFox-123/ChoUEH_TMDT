@@ -605,3 +605,111 @@ exports.updateTransactionStatus = async (req, res) => {
     handleProductError(res, error);
   }
 };
+
+// @desc    Get potential buyers (users who messaged about this product)
+// @route   GET /api/products/:id/buyers
+// @access  Private (seller only)
+exports.getProductBuyers = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy sản phẩm'
+      });
+    }
+
+    if (product.seller.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền xem thông tin này'
+      });
+    }
+
+    const Message = require('../models/Message');
+    const User = require('../models/User');
+
+    // Find unique senders who messaged the seller about this product
+    const buyerIds = await Message.find({
+      product: req.params.id,
+      receiver: req.user._id
+    }).distinct('sender');
+
+    if (buyerIds.length === 0) {
+      return res.json({
+        success: true,
+        buyers: []
+      });
+    }
+
+    const buyers = await User.find({ _id: { $in: buyerIds } })
+      .select('name avatar _id');
+
+    res.json({
+      success: true,
+      buyers
+    });
+  } catch (error) {
+    handleProductError(res, error);
+  }
+};
+
+// @desc    Set buyer for a product
+// @route   PATCH /api/products/:id/buyer
+// @access  Private (seller only)
+exports.setProductBuyer = async (req, res) => {
+  try {
+    const { buyerId } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy sản phẩm'
+      });
+    }
+
+    if (product.seller.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền cập nhật sản phẩm này'
+      });
+    }
+
+    // Validate buyerId
+    if (!buyerId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Buyer ID không hợp lệ'
+      });
+    }
+
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(buyerId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Buyer ID không hợp lệ'
+      });
+    }
+
+    // Buyer cannot be the seller
+    if (buyerId === product.seller.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Người mua không thể là người bán'
+      });
+    }
+
+    product.buyerId = buyerId;
+    await product.save();
+
+    res.json({
+      success: true,
+      buyerId: product.buyerId
+    });
+  } catch (error) {
+    handleProductError(res, error);
+  }
+};
