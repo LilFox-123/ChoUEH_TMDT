@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hồ sơ người bán - Chợ UEH</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link href="/css/custom.css" rel="stylesheet" />
+  <script>tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#00464d", "primary-container": "#005f69", "primary-fixed": "#a7eefa", "secondary": "#35618c", "secondary-container": "#a2cdfe", "secondary-fixed": "#d0e4ff", "on-secondary-fixed": "#001d35", "tertiary": "#712600", "tertiary-fixed": "#ffdbce", "surface": "#f2fbfc", "surface-container-lowest": "#ffffff", "surface-container-low": "#ecf5f6", "surface-container": "#e7f0f0", "surface-container-high": "#e1eaeb", "on-surface": "#151d1e", "on-surface-variant": "#3f484a", "outline": "#6f797a", "outline-variant": "#bec8ca", "background": "#f2fbfc", "error": "#ba1a1a", "accent-orange": "#EC6D33" }, fontFamily: { "headline": ["Plus Jakarta Sans"], "body": ["Inter"] }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" } } } }</script>
+</head>
+
+<body class="bg-background text-on-surface antialiased">
+
+  <%- include('partials/navbar') %>
+
+    <main class="pt-24 pb-16 px-6 max-w-5xl mx-auto">
+      <!-- Loading state -->
+      <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+        <span class="material-symbols-outlined text-5xl text-primary animate-spin">sync</span>
+        <p class="mt-4 text-on-surface-variant">Đang tải thông tin...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="error-state" class="hidden flex flex-col items-center justify-center py-20">
+        <span class="material-symbols-outlined text-6xl text-outline-variant mb-4">error</span>
+        <p class="text-xl font-bold text-on-surface">Không tìm thấy người bán</p>
+        <a href="/products" class="mt-4 text-primary font-bold underline">Quay lại danh sách sản phẩm</a>
+      </div>
+
+      <!-- Main content -->
+      <div id="main-content" class="hidden space-y-8">
+        <!-- Seller Hero Card -->
+        <section id="seller-hero"
+          class="bg-surface-container-lowest rounded-2xl border border-outline-variant/15 p-6 md:p-8">
+          <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <!-- Avatar -->
+            <div id="seller-avatar"
+              class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-primary-fixed flex items-center justify-center text-primary text-3xl font-bold shrink-0 overflow-hidden">
+              <!-- Will be filled by JS: initials or image -->
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 text-center md:text-left">
+              <h1 id="seller-name" class="text-2xl md:text-3xl font-extrabold text-on-surface mb-2"></h1>
+
+              <!-- Rating -->
+              <div class="flex items-center justify-center md:justify-start gap-2 mb-3">
+                <div id="seller-stars" class="flex items-center gap-0.5 text-yellow-500">
+                  <!-- Stars rendered by JS -->
+                </div>
+                <span id="seller-rating-text" class="text-sm font-bold text-on-surface"></span>
+                <span id="seller-reviews-count" class="text-sm text-on-surface-variant"></span>
+              </div>
+
+              <!-- Member since -->
+              <p id="seller-member-since" class="text-sm text-on-surface-variant mb-4"></p>
+
+              <!-- Trust badges -->
+              <div id="trust-badges" class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                <!-- Filled by JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Seller's Active Listings -->
+        <section>
+          <h2 class="text-xl font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">storefront</span>
+            Sản phẩm đang bán
+          </h2>
+
+          <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Filled by JS -->
+          </div>
+
+          <div id="products-empty" class="hidden bg-surface-container-low rounded-xl p-8 text-center">
+            <span class="material-symbols-outlined text-5xl text-outline-variant mb-3">inventory_2</span>
+            <p class="text-on-surface-variant">Người bán chưa có sản phẩm nào đang bán</p>
+          </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section>
+          <h2 id="reviews-title" class="text-xl font-bold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">reviews</span>
+            Đánh giá từ người mua (<span id="reviews-total">0</span> đánh giá)
+          </h2>
+
+          <div id="reviews-list" class="space-y-4">
+            <!-- Filled by JS -->
+          </div>
+
+          <div id="reviews-empty" class="hidden bg-surface-container-low rounded-xl p-8 text-center">
+            <span class="material-symbols-outlined text-5xl text-outline-variant mb-3">rate_review</span>
+            <p class="text-on-surface-variant">Chưa có đánh giá nào</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+      <div id="toast-container" class="toast-container"></div>
+      <script src="/js/app.js"></script>
+      <script>
+          (async function () {
+            const pathParts = window.location.pathname.split('/');
+            const sellerId = pathParts[pathParts.length - 1];
+
+            const loadingState = document.getElementById('loading-state');
+            const errorState = document.getElementById('error-state');
+            const mainContent = document.getElementById('main-content');
+
+            const esc = window.AppUtils.esc;
+            const timeAgo = window.AppUtils.timeAgo;
+
+            function renderStars(rating) {
+              const fullStars = Math.floor(rating);
+              const hasHalf = rating - fullStars >= 0.5;
+              let html = '';
+              for (let i = 0; i < 5; i++) {
+                if (i < fullStars) {
+                  html += '<span class="material-symbols-outlined text-lg" style="font-variation-settings: \'FILL\' 1;">star</span>';
+                } else if (i === fullStars && hasHalf) {
+                  html += '<span class="material-symbols-outlined text-lg" style="font-variation-settings: \'FILL\' 1;">star_half</span>';
+                } else {
+                  html += '<span class="material-symbols-outlined text-lg text-gray-300">star</span>';
+                }
+              }
+              return html;
+            }
+
+            function getInitials(name) {
+              if (!name) return '?';
+              const parts = name.trim().split(/\s+/);
+              if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+              return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+            }
+
+            try {
+              // Fetch seller data
+              const sellerRes = await fetch(`/api/users/${sellerId}`);
+              const sellerData = await sellerRes.json();
+
+              if (!sellerRes.ok || !sellerData.success) {
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                return;
+              }
+
+              const seller = sellerData.user;
+              const displayName = seller.displayName || seller.name || 'Người bán UEH';
+              const rating = seller.rating ?? 5.0;
+              const totalReviews = seller.totalReviews ?? 0;
+              const memberSince = seller.memberSince || seller.createdAt;
+
+              // Update page title
+              document.title = `${displayName} - Chợ UEH`;
+
+              // Render avatar
+              const avatarEl = document.getElementById('seller-avatar');
+              if (seller.avatar) {
+                avatarEl.innerHTML = `<img src="${esc(seller.avatar)}" alt="${esc(displayName)}" class="w-full h-full object-cover"/>`;
+              } else {
+                avatarEl.textContent = getInitials(displayName);
+              }
+
+              // Render name
+              document.getElementById('seller-name').textContent = displayName;
+
+              // Render stars
+              document.getElementById('seller-stars').innerHTML = renderStars(rating);
+              document.getElementById('seller-rating-text').textContent = rating.toFixed(1) + ' ⭐';
+              document.getElementById('seller-reviews-count').textContent = `(${totalReviews} đánh giá)`;
+
+              // Member since
+              document.getElementById('seller-member-since').textContent = memberSince
+                ? `Tham gia ${timeAgo(memberSince)}`
+                : 'Thành viên UEH';
+
+              // Trust badges
+              const badgesContainer = document.getElementById('trust-badges');
+              let badgesHtml = '';
+              if (rating >= 4.5) {
+                badgesHtml += '<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">✅ UEHer Uy tín</span>';
+              }
+              if (totalReviews >= 10) {
+                badgesHtml += '<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">🏆 Nhiều giao dịch</span>';
+              }
+              badgesContainer.innerHTML = badgesHtml;
+
+              // Fetch seller's active products
+              const productsRes = await fetch(`/api/products?seller=${sellerId}&status=available&limit=12`);
+              const productsData = await productsRes.json();
+
+              const productsGrid = document.getElementById('products-grid');
+              const productsEmpty = document.getElementById('products-empty');
+
+              if (productsData.success && productsData.data && productsData.data.length > 0) {
+                productsGrid.innerHTML = productsData.data.map(p => window.AppUtils.productCard(p)).join('');
+              } else {
+                productsGrid.classList.add('hidden');
+                productsEmpty.classList.remove('hidden');
+              }
+
+              // Fetch reviews
+              const reviewsRes = await fetch(`/api/users/${sellerId}/reviews?limit=10`);
+              const reviewsData = await reviewsRes.json();
+
+              const reviewsList = document.getElementById('reviews-list');
+              const reviewsEmpty = document.getElementById('reviews-empty');
+              const reviewsTotal = document.getElementById('reviews-total');
+
+              if (reviewsData.success && reviewsData.reviews && reviewsData.reviews.length > 0) {
+                reviewsTotal.textContent = reviewsData.total || reviewsData.reviews.length;
+                reviewsList.innerHTML = reviewsData.reviews.map(review => {
+                  const reviewerName = review.reviewer?.name || 'Người mua ẩn danh';
+                  const reviewerAvatar = review.reviewer?.avatar;
+                  const reviewerInitials = getInitials(reviewerName);
+
+                  return `
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/15 p-4">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary text-sm font-bold shrink-0 overflow-hidden">
+                ${reviewerAvatar
+                      ? `<img src="${esc(reviewerAvatar)}" alt="${esc(reviewerName)}" class="w-full h-full object-cover"/>`
+                      : esc(reviewerInitials)
+                    }
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-semibold text-on-surface text-sm">${esc(reviewerName)}</span>
+                  <span class="text-xs text-on-surface-variant">${timeAgo(review.createdAt)}</span>
+                </div>
+                <div class="flex items-center gap-0.5 text-yellow-500 mb-2">
+                  ${renderStars(review.rating)}
+                </div>
+                ${review.comment ? `<p class="text-sm text-on-surface-variant">${esc(review.comment)}</p>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+                }).join('');
+              } else {
+                reviewsTotal.textContent = '0';
+                reviewsList.classList.add('hidden');
+                reviewsEmpty.classList.remove('hidden');
+              }
+
+              // Show main content
+              loadingState.classList.add('hidden');
+              mainContent.classList.remove('hidden');
+
+            } catch (error) {
+              console.error('Failed to load seller profile:', error);
+              loadingState.classList.add('hidden');
+              errorState.classList.remove('hidden');
+            }
+          })();
+      </script>
+</body>
+
+</html>

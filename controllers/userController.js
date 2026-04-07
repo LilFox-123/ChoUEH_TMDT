@@ -76,6 +76,47 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+// @desc    Get reviews for a seller
+// @route   GET /api/users/:id/reviews
+// @access  Public
+exports.getReviews = async (req, res) => {
+  try {
+    const sellerId = req.params.id;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+
+    // Check if Review model exists
+    let Review;
+    try {
+      Review = require('../models/Review');
+    } catch (err) {
+      // Review model doesn't exist yet, return empty stub
+      return res.json({
+        success: true,
+        reviews: [],
+        total: 0
+      });
+    }
+
+    const reviews = await Review.find({ seller: sellerId })
+      .populate('reviewer', 'name avatar')
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    const total = await Review.countDocuments({ seller: sellerId });
+
+    res.json({
+      success: true,
+      reviews,
+      total
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 // @desc    Get UEH Green Score for a user
 // @route   GET /api/users/:id/green-score
 // @access  Private

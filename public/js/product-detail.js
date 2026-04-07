@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const controlBlock = document.createElement('div');
         controlBlock.id = 'seller-tx-controls';
         controlBlock.className = 'mt-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant/20';
-        
+
         const btnClass = (status) => {
           const base = 'flex-1 min-w-0 flex items-center justify-center gap-1 py-2 px-2 rounded-lg text-xs font-semibold transition-all';
           if (status === txStatus) {
@@ -318,17 +318,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         : 'Thành viên UEH';
 
       document.getElementById('seller-card').innerHTML = `
-        <div class="w-14 h-14 bg-[#a7eefa] rounded-full flex items-center justify-center text-[#00464d]">
-          <span class="material-symbols-outlined text-2xl">person</span>
-        </div>
-        <div class="flex-1">
-          <h3 class="font-bold text-on-surface">${window.AppUtils.esc(sellerName)}</h3>
-          <div class="flex items-center gap-1 text-xs text-[#3f484a]">
-            <span class="material-symbols-outlined text-sm text-yellow-500" style="font-variation-settings: 'FILL' 1;">star</span>
-            <span class="font-bold">${window.AppUtils.esc(sellerRating)}</span>
-            <span>${window.AppUtils.esc(sellerMeta)}</span>
+        <a href="/sellers/${product.sellerId}" class="flex items-center gap-4 flex-1">
+          <div class="w-14 h-14 bg-[#a7eefa] rounded-full flex items-center justify-center text-[#00464d]">
+            <span class="material-symbols-outlined text-2xl">person</span>
           </div>
-        </div>
+          <div class="flex-1">
+            <h3 class="font-bold text-on-surface">${window.AppUtils.esc(sellerName)}</h3>
+            <div class="flex items-center gap-1 text-xs text-[#3f484a]">
+              <span class="material-symbols-outlined text-sm text-yellow-500" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="font-bold">${window.AppUtils.esc(sellerRating)}</span>
+              <span>${window.AppUtils.esc(sellerMeta)}</span>
+            </div>
+          </div>
+        </a>
       `;
     }
 
@@ -351,6 +353,96 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       window.location.href = `/messages?userId=${product.sellerId}&productId=${product._id}`;
     });
+
+    // Rating section logic
+    const ratingSection = document.getElementById('rating-section');
+    const currentUser = window.AppUtils.getUser();
+    const isSold = product.transactionStatus === 'sold';
+    const isOwner = currentUser && product.sellerId === currentUser._id;
+    
+    // Show rating section only if: logged in, not the seller, and transaction is sold
+    if (currentUser && !isOwner && isSold && ratingSection) {
+      ratingSection.classList.remove('hidden');
+      
+      let selectedRating = 0;
+      const starBtns = ratingSection.querySelectorAll('.star-btn');
+      const submitBtn = document.getElementById('submit-rating');
+      const commentEl = document.getElementById('rating-comment');
+      const ratingForm = document.getElementById('rating-form');
+      const ratingSuccess = document.getElementById('rating-success');
+      
+      function updateStars(rating) {
+        starBtns.forEach((btn, idx) => {
+          const icon = btn.querySelector('.material-symbols-outlined');
+          if (idx < rating) {
+            btn.classList.remove('text-gray-300');
+            btn.classList.add('text-yellow-400');
+            icon.style.fontVariationSettings = "'FILL' 1";
+          } else {
+            btn.classList.add('text-gray-300');
+            btn.classList.remove('text-yellow-400');
+            icon.style.fontVariationSettings = "'FILL' 0";
+          }
+        });
+      }
+      
+      starBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedRating = parseInt(btn.dataset.star);
+          updateStars(selectedRating);
+          submitBtn.disabled = false;
+        });
+        
+        btn.addEventListener('mouseenter', () => {
+          updateStars(parseInt(btn.dataset.star));
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+          updateStars(selectedRating);
+        });
+      });
+      
+      submitBtn.addEventListener('click', async () => {
+        if (selectedRating < 1) return;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Đang gửi...';
+        
+        try {
+          const res = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              productId: product._id,
+              rating: selectedRating,
+              comment: commentEl.value.trim()
+            })
+          });
+          
+          const data = await res.json();
+          
+          if (res.status === 409) {
+            window.AppUtils.showToast('Bạn đã đánh giá giao dịch này rồi', 'warning');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Gửi đánh giá';
+            return;
+          }
+          
+          if (data.success) {
+            ratingForm.classList.add('hidden');
+            ratingSuccess.classList.remove('hidden');
+          } else {
+            window.AppUtils.showToast(data.message || 'Có lỗi xảy ra, vui lòng thử lại', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Gửi đánh giá';
+          }
+        } catch (err) {
+          window.AppUtils.showToast('Có lỗi xảy ra, vui lòng thử lại', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Gửi đánh giá';
+        }
+      });
+    }
 
     const relatedRes = await fetch(`/api/products?category=${product.category}&listingType=${product.listingType}&limit=4`);
     const relatedData = await relatedRes.json();

@@ -14,5 +14,6 @@ router.get('/profile', (req, res) => res.render('profile'));
 router.get('/admin', (req, res) => res.render('admin'));
 router.get('/admin/users', (req, res) => res.render('admin-users'));
 router.get('/admin/products', (req, res) => res.render('admin-products'));
+router.get('/sellers/:id', (req, res) => res.render('seller-profile', { sellerId: req.params.id }));
 
 module.exports = router;
