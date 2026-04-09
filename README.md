@@ -396,7 +396,7 @@ Vào [uptimerobot.com](https://uptimerobot.com) → Tạo monitor HTTP → URL: 
 |---|---|
 | **Môn học** | Thương mại điện tử |
 | **Trường** | Đại học Kinh tế TP.HCM (UEH) |
-| **Năm học** | 2024 – 2025 |
+| **Năm học** | 2025 – 2026 |
 
 ---
 
